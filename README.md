@@ -6,7 +6,7 @@ Independent ligthweight C/C++ library package-manager cross-platform.
 
 All topics.
 
-| - | [Purpose](./model/purpose.md).
+| - | [Purpose](./model/purpose.md).  
 | - | [Args](./model/args.md).
 
 @vokegpu
