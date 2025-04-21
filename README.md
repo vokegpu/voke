@@ -2,11 +2,8 @@
 
 Independent ligthweight C/C++ library package-manager cross-platform.
 
-## Model
+## Technial Details
 
-All topics.
-
-| - | [Purpose](./model/purpose.md).  
-| - | [Args](./model/args.md).
+[Please read here the technical docs](https://github.com/vokegpu/voke-docs)
 
 @vokegpu
