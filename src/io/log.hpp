@@ -29,7 +29,7 @@ namespace voke {
     }
 
     static void print(std::string_view msg) {
-      std::cout << "[VOKE] [PRINT] " << msg << std::endl;
+      std::cout << msg << std::endl;
     }
 
     template<typename t>
@@ -38,7 +38,7 @@ namespace voke {
         return;
       }
 
-      std::cout << "[EKG] [TRACE] " << trace << std::endl;
+      std::cout << trace << std::endl;
       if (interrupt_runtime) {
         std::terminate();
       }
@@ -51,7 +51,7 @@ namespace voke {
 
     explicit log() {
       voke::log::buffered = true;
-      voke::log::buffer << "[VOKE] ";
+      voke::log::buffer;
     }
 
     ~log() {
