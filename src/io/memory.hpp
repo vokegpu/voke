@@ -8,8 +8,10 @@ namespace voke {
 
   enum result {
     SUCCESS = 0,
-    TIMEOUT = 1,
-    UNKNOWN = 2
+    PASS    = 1,
+    FAILED  = 2,
+    TIMEOUT = 3,
+    UNKNOWN = 4
   };
 }
 

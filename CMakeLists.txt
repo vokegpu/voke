@@ -22,6 +22,12 @@ file(
 
 add_executable(voke ${SRC_FILES})
 
+target_include_directories(
+  voke PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:src>
+)
+
 set_target_properties(
   voke PROPERTIES
   CXX_STANDARD 17

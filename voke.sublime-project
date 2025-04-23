@@ -13,7 +13,7 @@
 		{
 			"name": "Build Windows-64 GNU",
 			"shell_cmd":
-				"cd $folder && cmake -S . -B ./cmake-build -G Ninja && cmake --build ./cmake-build && cd ./bin/windows/64 && voke.exe"
+				"cd $folder && cmake -S . -B ./cmake-build -G Ninja && cmake --build ./cmake-build && cd ./bin/windows/64 && voke.exe -v"
 		},
 	]
 }
