@@ -1,6 +1,8 @@
-# Folders
+# Dirs
 voke-docs/
 voke-libraries/
+bin/
+cmake-build/
 
 # Sublime
 *.sublime-workspace
