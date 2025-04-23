@@ -4,15 +4,19 @@ Independent lightweight cross-platform C/C++ library-manager.
 
 Until Windows support is done, VokeGpu will not implement support for Linux, or, [if you want to contribute, check the coding guide-style](https://github.com/vokegpu/code-of-conduct-and-style-guide), thanks.
 
-All you need: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
+All you need for compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
 ```sh
 cmake -S . -B ./cmake-build -G Ninja
 cmake --build ./cmake-build
 ```
 
+Soon `voke` must bootstrap it-self for installs dependencies, while no pre-compiled binary is released, no bootstrap is possible.
+
 ## Commands
 
 Of course `voke` is not done yet, it is on initial phase, but already include some commands.
+
+Note: You must have `git` installed, [visit here for download](https://git-scm.com/).
 
 ```sh
 voke -v
