@@ -5,6 +5,7 @@
 
 namespace voke {
   typedef uint64_t flags_t;
+  typedef uint64_t id_t;
 
   enum result {
     SUCCESS = 0,
@@ -12,6 +13,11 @@ namespace voke {
     FAILED  = 2,
     TIMEOUT = 3,
     UNKNOWN = 4
+  };
+
+  struct voke_file_t {
+  public:
+    
   };
 }
 
