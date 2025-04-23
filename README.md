@@ -4,7 +4,7 @@ Independent lightweight cross-platform C/C++ library-manager.
 
 On initial phase, `voke` has plans to implement support for Windows, until focus on Linux, [if you want to contribute check the coding guide-style here](https://github.com/vokegpu/code-of-conduct-and-style-guide), thanks.
 
-All you need for compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
+All you need to compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
 ```sh
 cmake -S . -B ./cmake-build -G Ninja
 cmake --build ./cmake-build
