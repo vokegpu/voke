@@ -1,7 +1,9 @@
 #ifndef VOKE_IO_MEMORY_HPP
 #define VOKE_IO_MEMORY_HPP
 
+#include <string>
 #include <cstdint>
+#include <vector>
 
 namespace voke {
   typedef uint64_t flags_t;
@@ -14,11 +16,10 @@ namespace voke {
     TIMEOUT = 3,
     UNKNOWN = 4
   };
+}
 
-  struct voke_file_t {
-  public:
-    
-  };
+namespace voke::io {
+  std::vector<std::string> split(std::string &str, char delimiter);
 }
 
 #endif

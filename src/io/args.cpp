@@ -6,8 +6,7 @@
 #include <regex>
 
 voke::flags_t voke::io::args_contains_any(
-  std::vector<std::string> prefixes,
-  std::vector<voke::io::argument_t> &args
+  std::vector<std::string> prefixes
 ) {
   for (voke::io::argument_t &arg : voke::app.args) {
     for (std::string &prefix : prefixes) {
@@ -42,13 +41,12 @@ voke::flags_t voke::io::args_contains_any_non(
 }
 
 std::vector<voke::io::argument_t> voke::io::args_find_all(
-  std::vector<std::string> prefixes,
-  std::vector<voke::io::argument_t> &args
+  std::vector<std::string> prefixes
 ) {
   std::vector<voke::io::argument_t> found_args {};
   for (voke::io::argument_t &arg : voke::app.args) {
     for (std::string &prefix : prefixes) {
-      if (prefix == arg.prefix) {
+      if (arg.prefix == prefix) {
         found_args.push_back(arg);
         break;
       }
@@ -58,35 +56,25 @@ std::vector<voke::io::argument_t> voke::io::args_find_all(
   return found_args;
 }
 
-voke::flags_t voke::io::args_find_any(
-  std::vector<std::string> prefixes,
+void voke::io::push_back_arg_if_necessary(
+  std::vector<voke::io::argument_t> &args,
+  voke::io::argument_t &arg
+) {
+  if (!arg.prefix.empty()) {
+    args.push_back(arg);
+  }
+}
+
+void voke::io::fill(
+  int32_t args_size,
+  char **pp_args,
   std::vector<voke::io::argument_t> &args
 ) {
-  for (voke::io::argument_t &arg : voke::app.args) {
-    for (std::string &prefix : prefixes) {
-      if (arg.prefix == prefix) {
-        args.push_back(arg);
-        break;
-      }
-    }
-  }
-
-  return args.empty() ? voke::result::TIMEOUT : voke::result::SUCCESS;
-}
-
-void voke::io::push_back_arg_if_necessary(voke::io::argument_t &arg) {
-  if (!arg.prefix.empty()) {
-    voke::app.args.push_back(arg);
-  }
-}
-
-void voke::io::fill(int32_t args_size, char **pp_args) {
   size_t size {static_cast<size_t>(args_size)};
   std::vector<std::string> unserialized_args {};
 
   for (size_t it {}; it < size; it++) {
     unserialized_args.push_back(pp_args[it]);
-    //voke::log() << pp_args[it];
   }
 
   bool is_at_end {};
@@ -108,7 +96,10 @@ void voke::io::fill(int32_t args_size, char **pp_args) {
       &&
       !serialized_arg.prefix.empty()
     ) {
-      voke::io::push_back_arg_if_necessary(serialized_arg);
+      voke::io::push_back_arg_if_necessary(
+        args,
+        serialized_arg
+      );
     }
 
     if (is_an_new_arg) {
@@ -126,7 +117,10 @@ void voke::io::fill(int32_t args_size, char **pp_args) {
     }
 
     if (is_at_end) {
-      voke::io::push_back_arg_if_necessary(serialized_arg);
+      voke::io::push_back_arg_if_necessary(
+        args,
+        serialized_arg
+      );
     }
   }
 }

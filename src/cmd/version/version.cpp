@@ -7,14 +7,13 @@ voke::flags_t voke::cmd::version::assert() {
     return voke::result::PASS;
   }
 
-  std::vector<voke::io::argument_t> args {};
+  std::vector<voke::io::argument_t> args {
+    voke::io::args_find_all(
+      voke::cmd::version::alias
+    )
+  };
 
-  if (
-    voke::io::args_find_any(
-      voke::cmd::version::alias,
-      args
-    ) == voke::result::TIMEOUT
-  ) {
+  if (args.empty()) {
     return voke::result::FAILED;
   }
 

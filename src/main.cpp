@@ -1,5 +1,4 @@
 #include "io/log.hpp"
-#include "io/git.hpp"
 #include "io/args.hpp"
 #include "io/memory.hpp"
 #include "voke.hpp"
@@ -13,7 +12,7 @@
 voke::app_t voke::app {};
 
 int32_t main(int32_t args_size, char **pp_args) {
-  voke::io::fill(args_size, pp_args);
+  voke::io::fill(args_size, pp_args, voke::app.args);
 
   bool status_ok {};
 
@@ -36,7 +35,7 @@ int32_t main(int32_t args_size, char **pp_args) {
   );
 
   if (status_ok == false) {
-    voke::log() << "Unknown argument use --help or -h";
+    voke::log() << "error: unknown argument use --help or -h";
   }
 
   return voke::log::flush();
