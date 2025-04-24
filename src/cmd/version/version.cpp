@@ -7,19 +7,19 @@ voke::flags_t voke::cmd::version::assert() {
     return voke::result::PASS;
   }
 
-  voke::io::argument_t argument {};
+  std::vector<voke::io::argument_t> args {};
 
   if (
-    voke::io::find_argument_by_prefix(
+    voke::io::args_find_any(
       voke::cmd::version::alias,
-      argument
+      args
     ) == voke::result::TIMEOUT
   ) {
     return voke::result::FAILED;
   }
 
   if (
-      !argument.values.empty()
+      !args.at(0).values.empty()
       ||
       voke::app.args.size() != 1
     ) {

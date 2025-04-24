@@ -5,20 +5,73 @@
 
 #include <regex>
 
-voke::flags_t voke::io::find_argument_by_prefix(
-  std::vector<std::string> prefix_list,
-  voke::io::argument_t &argument
+voke::flags_t voke::io::args_contains_any(
+  std::vector<std::string> prefixes,
+  std::vector<voke::io::argument_t> &args
 ) {
   for (voke::io::argument_t &arg : voke::app.args) {
-    for (std::string &prefix : prefix_list) {
-      if (arg.prefix == prefix) {
-        argument = arg;
+    for (std::string &prefix : prefixes) {
+      if (prefix == arg.prefix) {
         return voke::result::SUCCESS;
       }
     }
   }
 
   return voke::result::TIMEOUT;
+}
+
+voke::flags_t voke::io::args_contains_any_non(
+  std::vector<std::string> prefixes
+) {
+  bool contains_any {};
+  for (voke::io::argument_t &arg : voke::app.args) {
+    for (std::string &prefix : prefixes) {
+      if (
+          (contains_any = prefix == arg.prefix)
+      ) {
+        break;
+      }
+    }
+
+    if (!contains_any) {
+      return voke::result::SUCCESS;
+    }
+  }
+
+  return voke::result::TIMEOUT;
+}
+
+std::vector<voke::io::argument_t> voke::io::args_find_all(
+  std::vector<std::string> prefixes,
+  std::vector<voke::io::argument_t> &args
+) {
+  std::vector<voke::io::argument_t> found_args {};
+  for (voke::io::argument_t &arg : voke::app.args) {
+    for (std::string &prefix : prefixes) {
+      if (prefix == arg.prefix) {
+        found_args.push_back(arg);
+        break;
+      }
+    }
+  }
+
+  return found_args;
+}
+
+voke::flags_t voke::io::args_find_any(
+  std::vector<std::string> prefixes,
+  std::vector<voke::io::argument_t> &args
+) {
+  for (voke::io::argument_t &arg : voke::app.args) {
+    for (std::string &prefix : prefixes) {
+      if (arg.prefix == prefix) {
+        args.push_back(arg);
+        break;
+      }
+    }
+  }
+
+  return args.empty() ? voke::result::TIMEOUT : voke::result::SUCCESS;
 }
 
 void voke::io::push_back_arg_if_necessary(voke::io::argument_t &arg) {

@@ -6,6 +6,7 @@
 
 #include "cmd/help/help.hpp"
 #include "cmd/version/version.hpp"
+#include "cmd/sync/sync.hpp"
 
 #include <iostream>
 
@@ -26,6 +27,12 @@ int32_t main(int32_t args_size, char **pp_args) {
     voke::cmd::help::assert() == voke::result::SUCCESS
     &&
     voke::cmd::help::run() == voke::result::SUCCESS
+  );
+
+  status_ok = (
+    voke::cmd::sync::assert() == voke::result::SUCCESS
+    &&
+    voke::cmd::sync::run() == voke::result::SUCCESS
   );
 
   if (status_ok == false) {
