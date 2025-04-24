@@ -11,6 +11,7 @@ namespace voke::cmd::version {
   }; 
 
   voke::flags_t assert();
+  voke::flags_t run();
 }
 
 #endif

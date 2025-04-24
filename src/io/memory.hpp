@@ -1,7 +1,7 @@
 #ifndef VOKE_IO_MEMORY_HPP
 #define VOKE_IO_MEMORY_HPP
 
-#include <iostream>
+#include <cstdint>
 
 namespace voke {
   typedef uint64_t flags_t;

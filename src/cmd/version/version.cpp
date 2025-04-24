@@ -18,11 +18,18 @@ voke::flags_t voke::cmd::version::assert() {
     return voke::result::FAILED;
   }
 
-  if (!argument.values.empty()) {
+  if (
+      !argument.values.empty()
+      ||
+      voke::app.args.size() != 1
+    ) {
     return voke::result::FAILED;
   }
 
-  voke::log() << ">< meow moo\nVersion " << voke::app.version << "\n@VokeGpu";
+  return voke::result::SUCCESS;
+}
 
+voke::flags_t voke::cmd::version::run() {
+  voke::log() << ">< meow moo\nVersion " << voke::app.version << "\n@VokeGpu";
   return voke::result::SUCCESS;
 }

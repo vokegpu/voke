@@ -15,5 +15,10 @@
 			"shell_cmd":
 				"cd $folder && cmake -S . -B ./cmake-build -G Ninja && cmake --build ./cmake-build"
 		},
+		{
+			"name": "Build Linux-64 Clang",
+			"shell_cmd":
+				"cd $folder && cmake -S . -B ./cmake-build -G Ninja -D CMAKE_CXX_COMPILER=clang++ && cmake --build ./cmake-build"
+		},
 	]
 }

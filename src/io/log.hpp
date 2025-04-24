@@ -51,7 +51,6 @@ namespace voke {
 
     explicit log() {
       voke::log::buffered = true;
-      voke::log::buffer;
     }
 
     ~log() {

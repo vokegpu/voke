@@ -18,10 +18,18 @@ voke::flags_t voke::cmd::help::assert() {
     return voke::result::FAILED;
   }
 
-  if (!argument.values.empty()) {
+  if (
+      !argument.values.empty()
+      ||
+      voke::app.args.size() != 1     
+    ) {
     return voke::result::FAILED;
   }
 
+  return voke::result::SUCCESS;
+}
+
+voke::flags_t voke::cmd::help::run() {
   std::string help {
 R"(><
 
@@ -58,6 +66,5 @@ Version:)"
   };
 
   voke::log() << help << "\n  " << voke::app.version;
-
   return voke::result::SUCCESS;
 }
