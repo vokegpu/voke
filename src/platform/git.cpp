@@ -20,13 +20,13 @@ void voke::platform::voke_system_git_sync() {
     arg_builder += voke::platform::voke_system_path;
 
     voke::log::status = std::system(arg_builder.c_str());
-
-    arg_builder = {};
-    arg_builder += "cd ";
-    arg_builder += voke::platform::voke_system_path;
-
-    voke::log::status = std::system(arg_builder.c_str());
   }
 
-  voke::log::status = std::system("git pull");
+  arg_builder = {};
+  arg_builder += "cd ";
+  arg_builder += voke::platform::voke_system_path;
+  arg_builder += " && ";
+  arg_builder += "git pull";
+
+  voke::log::status = std::system(arg_builder.c_str());
 }

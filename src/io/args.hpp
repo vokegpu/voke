@@ -30,7 +30,8 @@ namespace voke::io {
   void fill(
     int32_t args_size,
     char **pp_args,
-    std::vector<voke::io::argument_t> &args
+    std::vector<voke::io::argument_t> &args,
+    bool should_serialize_quote = false
   );
 
   void push_back_arg_if_necessary(

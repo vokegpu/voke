@@ -55,15 +55,10 @@ namespace voke {
 
     ~log() {
       voke::log::buffer << '\n';
-
-      #if defined(EKG_LOG_DEBUG)
-        voke::log::flush();
-        std::cout << std::endl;
-      #endif
     }
 
     template<typename t>
-    log &operator<<(const t &value) {
+    log &operator<<(t value) {
       voke::log::buffer << value;
       return *this;
     }

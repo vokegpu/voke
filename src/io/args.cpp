@@ -68,22 +68,45 @@ void voke::io::push_back_arg_if_necessary(
 void voke::io::fill(
   int32_t args_size,
   char **pp_args,
-  std::vector<voke::io::argument_t> &args
+  std::vector<voke::io::argument_t> &args,
+  bool should_serialize_quote
 ) {
   size_t size {static_cast<size_t>(args_size)};
   std::vector<std::string> unserialized_args {};
+  std::string serialized_quote {};
+
+  bool found_quote {};
+  bool is_quoted {};
 
   for (size_t it {}; it < size; it++) {
-    unserialized_args.push_back(pp_args[it]);
+    std::string arg {pp_args[it]};
+    if (should_serialize_quote) {
+      found_quote = (arg.front() == '\'' || arg.front() == '"');
+      if (!is_quoted && found_quote) {
+        is_quoted = true;
+        arg.erase(arg.begin());
+      }
+
+      if (is_quoted) {
+        serialized_quote += ' ' * !found_quote;
+        serialized_quote += arg;
+      }
+
+      found_quote = (arg.back() == '\'' || arg.back() == '"');
+      if (is_quoted && found_quote) {
+        arg.erase(arg.end());
+        is_quoted = false;
+        unserialized_args.push_back(arg);
+      } else if (!is_quoted) {
+        unserialized_args.push_back(arg);
+      }
+    } else {
+      unserialized_args.push_back(arg);
+    }
   }
 
   bool is_at_end {};
   bool is_an_new_arg {};
-  bool is_quoted {};
-  bool was_quoted {};
-
-  std::string quoted {};
-  size_t last_char {};
 
   voke::io::argument_t serialized_arg {};  
   for (size_t it {1}; it < size; it++) {
@@ -115,32 +138,7 @@ void voke::io::fill(
       serialized_arg.raw += serialized_arg.prefix;
     }
 
-    if (!is_quoted && (arg.at(0) == '"' || arg.at(0) == '\'')) {
-      is_quoted = true;
-      quoted = arg.at(0);
-      quoted.erase(quoted.begin()); // remove quote char
-    }
-
-    was_quoted = false;
-    if (is_quoted && (arg.back() == '"' || arg.back() == '\'')) {
-      arg.erase(arg.end());
-      quoted += arg;
-
-      serialized_arg.raw += '\'';
-      serialized_arg.raw += quoted;
-      serialized_arg.raw += '\'';
-
-      arg = quoted;
-
-      is_quoted = false;
-      was_quoted = true;
-    }
-
-    if (is_quoted && !was_quoted) {
-      quoted += arg;
-    }
-
-    if (!is_quoted && (was_quoted || arg.at(0) != '-')) {
+    if (arg.at(0) != '-') {
       serialized_arg.values.push_back(arg);
       serialized_arg.raw += ' ';
       serialized_arg.raw += arg;

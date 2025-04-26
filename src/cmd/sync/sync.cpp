@@ -98,9 +98,8 @@ voke::flags_t voke::cmd::sync::run() {
   voke::platform::voke_system_fetch_libraries();
 
   std::string arg_builder {};
-
   std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
-  if (args.size() == 1 && args.at(0).values.size() > 3) {
+  if (args.size() == 1 && args.at(0).values.size() == 1 && args.at(0).values.at(0).size() > 3) {
     voke::io::argument_t arg {
       args.at(0)
     };
@@ -149,13 +148,30 @@ voke::flags_t voke::cmd::sync::run() {
       }
 
       if (args.size() == 0) {
+        std::vector<std::string> lookup_compilers_voke_file {};
+        voke::platform::voke_system_lookup_compilers_from_library(
+          library,
+          lookup_compilers_voke_file
+        );
 
+        for (std::string &compiler_path : lookup_compilers_voke_file) {
+          library.voke_path = compiler_path;
+          voke::flags_t result {
+            voke::platform::voke_system_fetch_library(
+              library
+            )
+          };
+        }
       }
 
       return voke::result::SUCCESS;
     }
 
-    if (!is_library_type) {
+    bool is_compiler_type {
+      !is_library_type
+    };
+
+    if (is_compiler_type) {
         return voke::result::SUCCESS;
     }
   }

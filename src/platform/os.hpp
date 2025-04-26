@@ -16,7 +16,8 @@ namespace voke::platform {
 
   voke::flags_t voke_system_fetch_compilers();
   voke::flags_t voke_system_fetch_libraries();
-  voke::flags_t voke_system_compile_library(voke::io::library_t &library);
+  voke::flags_t voke_system_fetch_library(voke::io::library_t &library);
+  voke::flags_t voke_system_lookup_compilers_from_library(voke::io::library_t &library, std::vector<std::string> &compilers);
 }
 
 #endif

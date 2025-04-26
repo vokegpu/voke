@@ -12,7 +12,16 @@ namespace voke::io {
     std::string voke_tag {};
     std::string voke_path {};
     std::string tag {};
+    std::string url {};
+    std::vector<std::string> git_clone_args {};
+    std::string cmake_dir {};
+    std::string generator {};
     std::string version {};
+    std::vector<std::string> include_dirs {};
+    std::vector<std::string> binary_win_32_dirs {};
+    std::vector<std::string> binary_win_64_dirs {};
+    std::vector<std::string> binary_linux_32_dirs {};
+    std::vector<std::string> binary_linux_64_dirs {};
     std::vector<std::string> libs {};
     std::vector<std::string> includes {};
     std::string compiler {};
@@ -40,6 +49,11 @@ namespace voke::io {
   );
 
   voke::flags_t extract_installed_library_info_from_line(
+    std::string &line,
+    voke::io::library_t &library
+  );
+
+  voke::flags_t extract_library_info_from_line(
     std::string &line,
     voke::io::library_t &library
   );
