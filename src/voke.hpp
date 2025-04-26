@@ -13,6 +13,7 @@ namespace voke {
     std::string version {"0.1.0"};
     std::vector<voke::io::argument_t> args {};
     std::vector<voke::io::compiler_t> compilers {};
+    std::vector<voke::io::library_t> libraries {};
   } app;
 }
 

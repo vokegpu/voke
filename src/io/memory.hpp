@@ -10,11 +10,13 @@ namespace voke {
   typedef uint64_t id_t;
 
   enum result {
-    SUCCESS = 0,
-    PASS    = 1,
-    FAILED  = 2,
-    TIMEOUT = 3,
-    UNKNOWN = 4
+    SUCCESS                  = 0,
+    SUCCESS_PASS             = 1,
+    WARNING_INVALID_COMPILER = 2,
+    WARNING_INVALID_LIBRARY  = 3,
+    ERROR_FAILED             = 4,
+    ERROR_TIMEOUT            = 5,
+    ERROR_UNKNOWN            = 6
   };
 }
 

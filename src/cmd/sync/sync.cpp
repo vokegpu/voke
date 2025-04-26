@@ -8,7 +8,7 @@
 
 voke::flags_t voke::cmd::sync::assert() {
   if (voke::app.args.empty()) {
-    return voke::result::PASS;
+    return voke::result::SUCCESS_PASS;
   }
 
   std::vector<voke::io::argument_t> args {
@@ -24,7 +24,7 @@ voke::flags_t voke::cmd::sync::assert() {
       voke::cmd::sync::alias
     ) == voke::result::SUCCESS
   ) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
   if (
@@ -32,66 +32,60 @@ voke::flags_t voke::cmd::sync::assert() {
     &&
     args.at(0).prefix != "--sync"
     &&
-    args.at(0).prefix != "-sc"
+    args.at(0).prefix != "--sac"
     &&
-    args.at(0).prefix != "--sync-compiler"
+    args.at(0).prefix != "--sync-all-compilers"
+    &&
+    args.at(0).prefix != "-sal"
+    &&
+    args.at(0).prefix != "--sync-all-libraries"
   ) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
-  bool is_binary {
-    voke::io::args_find_all({"-b", "--binary"}).size() == 0
-    ||
-    (
-      voke::io::args_find_all({"-b", "--binary"}).size() == 1
-      &&
-      voke::io::args_find_all({"-b", "--binary"}).at(0).values.empty()
-    )
-  };
+  args = voke::io::args_find_all({"-s", "--sync"});
+  if (args.size() == 1) {
+    if (args.at(0).values.size() != 1) {
+      return voke::result::ERROR_FAILED;
+    }
 
-  bool is_version {
-    voke::io::args_find_all({"-v", "--version"}).size() == 0
-    ||
-    (
-      voke::io::args_find_all({"-v", "--version"}).size() == 1
-      &&
-      !voke::io::args_find_all({"-v", "--version"}).at(0).values.empty()
-    )
-  };
+    args = voke::io::args_find_all({"-v", "--version"});
+    if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
+      return voke::result::ERROR_FAILED;
+    }
 
-  if (
-    voke::io::args_find_all({"-sc", "--sync-compiler"}).size() == 1
-    &&
-    !voke::io::args_find_all({"-sc", "--sync-compiler"}).at(0).values.empty()
-    &&
-    (
-      voke::app.args.size() == 1
-      ||
-      (is_binary && is_version)
-      ||
-      (is_version && is_binary)
-    )
-  ) {
+    args = voke::io::args_find_all({"-b", "--binary"});
+    if (!args.empty() && (args.size() != 1 || !args.at(0).values.empty())) {
+      return voke::result::ERROR_FAILED;
+    }
+
+    args = voke::io::args_find_all({"-c", "--compilers"});
+    if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
+      return voke::result::ERROR_FAILED;
+    }
+
     return voke::result::SUCCESS;
   }
 
-  if (
-    voke::io::args_find_all({"-s", "--sync"}).size() == 1
-    &&
-    voke::io::args_find_all({"-s", "--sync"}).at(0).values.size() == 1
-    &&
-    (
-      voke::app.args.size() == 1
-      ||
-      (is_binary && is_version)
-      ||
-      (is_version && is_binary)
-    )
-  ) {
+  args = voke::io::args_find_all({"-sal", "--sync-all-libraries"});
+  if (args.size() == 1) {
+    if (!args.at(0).values.empty()) {
+      return voke::result::ERROR_FAILED;
+    }
+
     return voke::result::SUCCESS;
   }
 
-  return voke::result::FAILED;
+  args = voke::io::args_find_all({"-sac", "--sync-all-compilers"});
+  if (args.size() == 1) {
+    if (!args.at(0).values.empty()) {
+      return voke::result::ERROR_FAILED;
+    }
+
+    return voke::result::SUCCESS;
+  }
+
+  return voke::result::ERROR_FAILED;
 }
 
 voke::flags_t voke::cmd::sync::run() {
@@ -100,49 +94,70 @@ voke::flags_t voke::cmd::sync::run() {
   }
 
   voke::platform::voke_system_git_sync();
+  voke::platform::voke_system_fetch_compilers();
+  voke::platform::voke_system_fetch_libraries();
+
   std::string arg_builder {};
 
-  std::ifstream installed_compilers(voke::platform::voke_system_installed_compilers_path);
-  if (installed_compilers.is_open()) {
-    std::string line {};
-    while (getline(installed_compilers, line)) {
-      if (line.empty()) {
-        continue;
-      }
-
-      voke::io::extract_compiler_info_from_line(line, voke::app.compilers.emplace_back());
-    }
-  }
-
-  std::vector<voke::io::argument_t> args {};
-  if ((args = voke::io::args_find_all({"-s", "--sync"})).size() == 1) {
-    voke::io::library_t library {
-      .voke_tag = args.at(0).values.at(0)
+  std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
+  if (args.size() == 1 && args.at(0).values.size() > 3) {
+    voke::io::argument_t arg {
+      args.at(0)
     };
 
-    library.voke_path += voke::platform::voke_system_path;
-    library.voke_path += "/";
-    library.voke_path += library.voke_tag;
+    bool is_library_type {
+      arg.values.at(0).at(0) == 'l' // meow
+      &&
+      arg.values.at(0).at(1) == 'i' // moo
+      &&
+      arg.values.at(0).at(2) == 'b' // wolfowlf
+    };
 
-    arg_builder = {};
-    arg_builder += "cd ";
-    arg_builder += library.voke_path;
+    if (
+      is_library_type
+    ) {
+      voke::io::library_t library {
+        .voke_tag = args.at(0).values.at(0)
+      };
 
-    voke::log::status = std::system(arg_builder.c_str());
+      library.voke_path += voke::platform::voke_system_path;
+      library.voke_path += "/";
+      library.voke_path += library.voke_tag;
 
-    if (voke::log::status != 0) {
-      voke::log() << "\n---\n\nerror: no C/C++ library found named '" << library.voke_tag << "'";
+      arg_builder = {};
+      arg_builder += "cd ";
+      arg_builder += library.voke_path;
+
+      voke::log::status = std::system(arg_builder.c_str());
+
+      if (voke::log::status != 0) {
+        voke::log() << "error: no C/C++ library found named '" << library.voke_tag << "'";
+        return voke::result::SUCCESS;
+      }
+
+      voke::log() << "detail: C/C++ library named '" << library.voke_tag << "' found";
+      voke::log() << "detail: syncing library '" << library.voke_path << "'";
+
+      args = voke::io::args_find_all({"-v", "--version"});
+      if (args.size() == 1) {
+
+      }
+
+      args = voke::io::args_find_all({"-b", "--binary"});
+      if (args.size() == 1) {
+        
+      }
+
+      if (args.size() == 0) {
+
+      }
+
       return voke::result::SUCCESS;
     }
 
-    voke::log() << "\n---\n\ndetail: C/C++ library named '" << library.voke_tag << "' found";
-    voke::log() << "detail: syncing library '" << library.voke_path << "'";
-
-    
-  }
-
-  if (voke::io::args_find_all({"-sc", "--sync-compiler"}).size() == 1) {
-    
+    if (!is_library_type) {
+        return voke::result::SUCCESS;
+    }
   }
 
   return voke::result::SUCCESS;

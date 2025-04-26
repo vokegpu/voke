@@ -4,7 +4,7 @@
 
 voke::flags_t voke::cmd::help::assert() {
   if (voke::app.args.empty()) {
-    return voke::result::PASS;
+    return voke::result::SUCCESS_PASS;
   }
 
   std::vector<voke::io::argument_t> args {
@@ -14,7 +14,7 @@ voke::flags_t voke::cmd::help::assert() {
   };
 
   if (args.empty()) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
   if (
@@ -22,7 +22,7 @@ voke::flags_t voke::cmd::help::assert() {
       ||
       voke::app.args.size() != 1     
     ) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
   return voke::result::SUCCESS;
@@ -30,40 +30,39 @@ voke::flags_t voke::cmd::help::assert() {
 
 voke::flags_t voke::cmd::help::run() {
   std::string help {
-R"(><
+R"(detail:
 
-For more development info visit:
+><
+
+for more development info visit:
 | - | https://github.com/vokegpu/voke
 | - | https://github.com/vokegpu/voke-docs
 
-Use:
-  voke -v                 Output software version.
-  voke --version
+use:
+  voke | -s *                  sync a C/C++ library or a compiler
+       | --sync *
+        | -v *                 optional: version to look-up
+        | --version *
+        | -b                   optional: pre-compiled binary
+        | --binary
+        | -c                   optional: specify compilers to sync the library, e.g: clang-msvc64 clang-mingw64 etc 
+        | --compilers
 
-  voke -sc *              Sync the system with a compiler: clang, mingw, clang-mingw, gnu.
-  voke --sync-compiler *
-  voke ... -v *           Sync the system with a specific version of a compiler.
-  voke ... --version *
-  voke ... ... -b         Sync the system with a compiler pre-compiled binary, you can combine with version.
-  voke ... ... --binary
+  voke | -r *                  remove a C/C++ library or a compiler from the system
+       | --remove *
 
-  voke -s *               Sync the system with a C/C++ library.
-  voke --sync *
-  voke ... -v             Sync the system with a specific version of a C/C++ library.
-  voke ... --version *
-  voke ... ... -b         Sync the system with a C/C++ library pre-compiled binary, you can combine with version.
-  voke ... ... --binary
+  voke | -sac                  sync all C/C++ compilers-installed in voke-system 
+       | --sync-all-compilers
+       | -sal                  sync all C/C++ libraries-installed in voke-system 
+       | --sync-all-libraries
 
-  voke                    Upgrade all unsynced C/C++ libraries and compilers in the system.
-  voke -su
-  voke --sync-upgrade 
+  voke | -v                    output software version
+       | --version
 
-  voke -r *               Remove a C/C++ library or a compiler from the system.
-  voke --remove *
-
-Version:)"
+version:)"
   };
 
   voke::log() << help << "\n  " << voke::app.version;
   return voke::result::SUCCESS;
 }
+

@@ -4,7 +4,7 @@
 
 voke::flags_t voke::cmd::version::assert() {
   if (voke::app.args.empty()) {
-    return voke::result::PASS;
+    return voke::result::SUCCESS_PASS;
   }
 
   std::vector<voke::io::argument_t> args {
@@ -14,7 +14,7 @@ voke::flags_t voke::cmd::version::assert() {
   };
 
   if (args.empty()) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
   if (
@@ -22,13 +22,15 @@ voke::flags_t voke::cmd::version::assert() {
       ||
       voke::app.args.size() != 1
     ) {
-    return voke::result::FAILED;
+    return voke::result::ERROR_FAILED;
   }
 
   return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::cmd::version::run() {
-  voke::log() << ">< meow moo\nVersion " << voke::app.version << "\n@VokeGpu";
+  voke::log() << "detail: voke (Voke) version " << voke::app.version;
+  voke::log() << "detail: https://github.com/vokegpu/voke";
+  voke::log() << "detail: @vokegpu";
   return voke::result::SUCCESS;
 }

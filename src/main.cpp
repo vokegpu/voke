@@ -22,13 +22,13 @@ int32_t main(int32_t args_size, char **pp_args) {
     voke::cmd::version::run() == voke::result::SUCCESS
   );
 
-  status_ok = (
+  status_ok = status_ok || (
     voke::cmd::help::assert() == voke::result::SUCCESS
     &&
     voke::cmd::help::run() == voke::result::SUCCESS
   );
 
-  status_ok = (
+  status_ok = status_ok || (
     voke::cmd::sync::assert() == voke::result::SUCCESS
     &&
     voke::cmd::sync::run() == voke::result::SUCCESS

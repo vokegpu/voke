@@ -16,7 +16,7 @@ voke::flags_t voke::io::args_contains_any(
     }
   }
 
-  return voke::result::TIMEOUT;
+  return voke::result::ERROR_TIMEOUT;
 }
 
 voke::flags_t voke::io::args_contains_any_non(
@@ -37,7 +37,7 @@ voke::flags_t voke::io::args_contains_any_non(
     }
   }
 
-  return voke::result::TIMEOUT;
+  return voke::result::ERROR_TIMEOUT;
 }
 
 std::vector<voke::io::argument_t> voke::io::args_find_all(
@@ -79,10 +79,15 @@ void voke::io::fill(
 
   bool is_at_end {};
   bool is_an_new_arg {};
+  bool is_quoted {};
+  bool was_quoted {};
+
+  std::string quoted {};
+  size_t last_char {};
 
   voke::io::argument_t serialized_arg {};  
   for (size_t it {1}; it < size; it++) {
-    std::string &arg {unserialized_args.at(it)};
+    std::string arg {unserialized_args.at(it)};
 
     if (arg.empty()) {
       continue;
@@ -110,7 +115,32 @@ void voke::io::fill(
       serialized_arg.raw += serialized_arg.prefix;
     }
 
-    if (arg.at(0) != '-') {
+    if (!is_quoted && (arg.at(0) == '"' || arg.at(0) == '\'')) {
+      is_quoted = true;
+      quoted = arg.at(0);
+      quoted.erase(quoted.begin()); // remove quote char
+    }
+
+    was_quoted = false;
+    if (is_quoted && (arg.back() == '"' || arg.back() == '\'')) {
+      arg.erase(arg.end());
+      quoted += arg;
+
+      serialized_arg.raw += '\'';
+      serialized_arg.raw += quoted;
+      serialized_arg.raw += '\'';
+
+      arg = quoted;
+
+      is_quoted = false;
+      was_quoted = true;
+    }
+
+    if (is_quoted && !was_quoted) {
+      quoted += arg;
+    }
+
+    if (!is_quoted && (was_quoted || arg.at(0) != '-')) {
       serialized_arg.values.push_back(arg);
       serialized_arg.raw += ' ';
       serialized_arg.raw += arg;

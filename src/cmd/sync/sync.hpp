@@ -8,10 +8,12 @@
 
 namespace voke::cmd::sync {
   const static std::vector<std::string> alias {
-    "-s",  "--sync",
-    "-sc", "--sync-compiler",
-    "-b",  "--binary",
-    "-v",  "--version"
+    "-s", "--sync",
+    "-b", "--binary",
+    "-v", "--version",
+    "-c", "--compilers",
+    "-sal", "--sync-all-libraries",
+    "-sac", "--sync-all-compilers"
   };
 
   voke::flags_t assert();
