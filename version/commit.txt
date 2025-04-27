@@ -1,0 +1,7 @@
+0.1.0 04/27/25
+
+-- Added basic commands: `-v --version` `-h --help`.
+-- Added sync command: `-s --sync`.
+-- Sync command now also include compilers.
+-- Sync command contains new args for sync all: `-sal --sync-all-libraries` `-sac --sync-all-compilers`.
+-- Extra-logs option that make the verbose level as two.

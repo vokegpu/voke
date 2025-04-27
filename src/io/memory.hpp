@@ -6,8 +6,8 @@
 #include <vector>
 
 namespace voke {
-  typedef uint64_t flags_t;
-  typedef uint64_t id_t;
+  typedef uint32_t flags_t;
+  typedef uint32_t id_t;
   typedef int32_t shell_result_t;
 
   enum result {
