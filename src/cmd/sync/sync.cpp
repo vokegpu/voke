@@ -89,13 +89,23 @@ voke::flags_t voke::cmd::sync::assert() {
 }
 
 voke::flags_t voke::cmd::sync::run() {
-  if (std::system("git --version") != 0) {
+  voke::shell() << "git --version";
+  if (voke::shell::result != 0) {
+    voke::log() << "error: command 'git' not found, please install git";
     return voke::result::SUCCESS;
   }
 
-  voke::platform::voke_system_git_sync();
-  voke::platform::voke_system_fetch_compilers();
-  voke::platform::voke_system_fetch_libraries();
+  if (
+    voke::platform::sync_git_repository(
+      voke::platform::vokegpu_voke_libraries_repository_url,
+      voke::platform::voke_system_path
+    ) == voke::result::ERROR_FAILED
+  ) {
+    return voke::result::SUCCESS;
+  }
+
+  voke::platform::voke_system_fetch_installed_compilers();
+  voke::platform::voke_system_fetch_installed_libraries();
 
   std::string arg_builder {};
   std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
@@ -123,13 +133,8 @@ voke::flags_t voke::cmd::sync::run() {
       library.voke_path += "/";
       library.voke_path += library.voke_tag;
 
-      arg_builder = {};
-      arg_builder += "cd ";
-      arg_builder += library.voke_path;
-
-      voke::log::status = std::system(arg_builder.c_str());
-
-      if (voke::log::status != 0) {
+      voke::shell() << "cd " << library.voke_path;
+      if (voke::shell::result != 0) {
         voke::log() << "error: no C/C++ library found named '" << library.voke_tag << "'";
         return voke::result::SUCCESS;
       }
@@ -149,19 +154,15 @@ voke::flags_t voke::cmd::sync::run() {
 
       if (args.size() == 0) {
         std::vector<std::string> lookup_compilers_voke_file {};
-        voke::platform::voke_system_lookup_compilers_from_library(
+        voke::platform::voke_system_lookup_compilers_from_host_library(
           library,
           lookup_compilers_voke_file
         );
 
-        for (std::string &compiler_path : lookup_compilers_voke_file) {
-          library.voke_path = compiler_path;
-          voke::flags_t result {
-            voke::platform::voke_system_fetch_library(
-              library
-            )
-          };
-        }
+        voke::platform::voke_system_fetch_compilers_info_from_host_library(
+          library,
+          lookup_compilers_voke_file
+        );
       }
 
       return voke::result::SUCCESS;

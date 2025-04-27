@@ -7,7 +7,8 @@
 
 namespace voke::cmd::version {
   const static std::vector<std::string> alias {
-    "--version", "-v"
+    "--version", "-v",
+    "--extra-logs", "-el"
   }; 
 
   voke::flags_t assert();

@@ -13,7 +13,8 @@ namespace voke::cmd::sync {
     "-v", "--version",
     "-c", "--compilers",
     "-sal", "--sync-all-libraries",
-    "-sac", "--sync-all-compilers"
+    "-sac", "--sync-all-compilers",
+    "--extra-logs", "-el"
   };
 
   voke::flags_t assert();

@@ -1,32 +1,39 @@
 #include "git.hpp"
-#include "os.hpp"
 #include "io/log.hpp"
+#include "platform/os.hpp"
 
 #include <iostream>
 #include <string>
 
-void voke::platform::voke_system_git_sync() {
-  std::string arg_builder {};
-
-  arg_builder = {};
-  arg_builder += "cd ";
-  arg_builder += voke::platform::voke_system_path;
-
-  if (std::system(arg_builder.c_str()) != 0) {
-    arg_builder = {};
-    arg_builder += "git clone ";
-    arg_builder += voke::platform::vokegpu_voke_libraries_repository_url;
-    arg_builder += ' ';
-    arg_builder += voke::platform::voke_system_path;
-
-    voke::log::status = std::system(arg_builder.c_str());
+voke::flags_t voke::platform::sync_git_repository(
+  std::string url,
+  std::string path_to_clone,
+  std::string clone_args
+) {
+  voke::shell() << "cd " << path_to_clone;
+  if (voke::shell::result != 0) {
+    voke::shell() 
+      << "git clone "
+      << url
+      << ' '
+      << path_to_clone
+      << ' '
+      << clone_args;
   }
 
-  arg_builder = {};
-  arg_builder += "cd ";
-  arg_builder += voke::platform::voke_system_path;
-  arg_builder += " && ";
-  arg_builder += "git pull";
+  if (voke::shell::result) {
+    voke::log::error = url;
+    return voke::result::ERROR_FAILED;
+  }
 
-  voke::log::status = std::system(arg_builder.c_str());
+  voke::shell() 
+    << "cd "
+    << path_to_clone
+    << " && git pull";
+
+  return (
+    voke::shell::result
+    ?
+    voke::result::SUCCESS : voke::result::ERROR_FAILED
+  );
 }

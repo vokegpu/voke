@@ -6,7 +6,9 @@
 #include <iostream>
 #include <filesystem>
 
-voke::flags_t voke::platform::voke_system_fetch_compilers() {
+voke::shell_result_t voke::shell::result {};
+
+voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   voke::flags_t result {voke::result::SUCCESS};
 
   std::ifstream installed_compilers(voke::platform::voke_system_installed_compilers_path);
@@ -42,7 +44,7 @@ voke::flags_t voke::platform::voke_system_fetch_compilers() {
   return result;
 }
 
-voke::flags_t voke::platform::voke_system_fetch_libraries() {
+voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   voke::flags_t result {voke::result::SUCCESS};
 
   std::ifstream installed_libraries(voke::platform::voke_system_installed_libraries_path);
@@ -129,8 +131,7 @@ voke::flags_t voke::platform::voke_system_fetch_library(
   return voke::result::SUCCESS;
 }
 
-
-voke::flags_t voke::platform::voke_system_lookup_compilers_from_library(
+voke::flags_t voke::platform::voke_system_lookup_compilers_from_host_library(
   voke::io::library_t &library,
   std::vector<std::string> &compilers
 ) {
@@ -141,6 +142,20 @@ voke::flags_t voke::platform::voke_system_lookup_compilers_from_library(
 
     voke::log() << "detail: lookup result found voke-file '" << compiler << '"'; 
   }
+
+  return voke::result::SUCCESS;
+}
+
+voke::flags_t voke::platform::voke_system_fetch_compilers_info_from_host_library(
+  voke::io::library_t &library,
+  std::vector<std::string> &compilers
+) {
+  for (std::string &compiler_path : compilers) {
+    library.voke_path = compiler_path;
+    voke::platform::voke_system_fetch_library(
+      library
+    );
+  };
 
   return voke::result::SUCCESS;
 }

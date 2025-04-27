@@ -8,8 +8,14 @@
 #include <vector>
 
 namespace voke {
+  enum verbose_level {
+    LEVEL_ONE,
+    LEVEL_TWO
+  };
+
   extern struct app_t {
   public:
+    voke::verbose_level verbose_level {voke::verbose_level::LEVEL_ONE};
     std::string version {"0.1.0"};
     std::vector<voke::io::argument_t> args {};
     std::vector<voke::io::compiler_t> installed_compilers {};

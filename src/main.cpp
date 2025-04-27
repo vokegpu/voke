@@ -16,6 +16,16 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::io::extract(args_size, pp_args, in_args);
   voke::io::fill(in_args, voke::app.args);
 
+  std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-el", "--extra-logs"})};
+  if (args.size() == 1 && !args.at(0).values.empty()) {
+    voke::io::throw_unknown_command_or_arguments();
+    return voke::log::flush();
+  }
+
+  voke::app.verbose_level = (
+    args.empty() ? voke::verbose_level::LEVEL_ONE : voke::verbose_level::LEVEL_TWO
+  );
+
   bool status_ok {};
 
   status_ok = (
@@ -37,7 +47,7 @@ int32_t main(int32_t args_size, char **pp_args) {
   );
 
   if (status_ok == false) {
-    voke::log() << "error: unknown argument use --help or -h";
+    voke::io::throw_unknown_command_or_arguments();
   }
 
   return voke::log::flush();

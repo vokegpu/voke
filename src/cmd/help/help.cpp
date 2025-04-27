@@ -18,9 +18,23 @@ voke::flags_t voke::cmd::help::assert() {
   }
 
   if (
+    args.empty()
+    ||
+    voke::io::args_contains_any_non(
+      voke::cmd::help::alias
+    ) == voke::result::SUCCESS
+  ) {
+    return voke::result::ERROR_FAILED;
+  }
+
+  if (
       !args.at(0).values.empty()
       ||
-      voke::app.args.size() != 1     
+      (
+        voke::app.args.at(0).prefix != "-h"
+        &&
+        voke::app.args.at(0).prefix != "--help"
+      )
     ) {
     return voke::result::ERROR_FAILED;
   }

@@ -43,6 +43,8 @@ namespace voke::io {
     std::vector<voke::io::argument_t> &args,
     voke::io::argument_t &arg
   );
+
+  voke::flags_t throw_unknown_command_or_arguments();
 }
 
 #endif

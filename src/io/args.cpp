@@ -168,3 +168,8 @@ void voke::io::fill(
     }
   }
 }
+
+voke::flags_t voke::io::throw_unknown_command_or_arguments() {
+  voke::log() << "error: unknown command or arguments use --help or -h";
+  return voke::result::ERROR_UNKNOWN;
+}
