@@ -101,6 +101,7 @@ voke::flags_t voke::cmd::sync::run() {
       voke::platform::voke_system_path
     ) == voke::result::ERROR_FAILED
   ) {
+    voke::log() << "error: could not sync voke-system libraries repository use -el or --extra-logs";
     return voke::result::SUCCESS;
   }
 
@@ -129,18 +130,19 @@ voke::flags_t voke::cmd::sync::run() {
         .voke_tag = args.at(0).values.at(0)
       };
 
+      voke::log() << "detail: searching for library named '" << library.voke_tag << "'...";
+
       library.voke_path += voke::platform::voke_system_path;
       library.voke_path += "/";
       library.voke_path += library.voke_tag;
 
       voke::shell() << "cd " << library.voke_path;
       if (voke::shell::result != 0) {
-        voke::log() << "error: no C/C++ library found named '" << library.voke_tag << "'";
+        voke::log() << "error: no library found named '" << library.voke_tag << "'";
         return voke::result::SUCCESS;
       }
 
-      voke::log() << "detail: C/C++ library named '" << library.voke_tag << "' found";
-      voke::log() << "detail: syncing library '" << library.voke_path << "'";
+      voke::log() << "detail: found, synching at '" << library.voke_path << '\''; 
 
       args = voke::io::args_find_all({"-v", "--version"});
       if (args.size() == 1) {
@@ -153,6 +155,8 @@ voke::flags_t voke::cmd::sync::run() {
       }
 
       if (args.size() == 0) {
+        voke::log() << "detail: looking for voke-files...";
+
         std::vector<std::string> lookup_compilers_voke_file {};
         voke::platform::voke_system_lookup_compilers_from_host_library(
           library,
@@ -163,6 +167,29 @@ voke::flags_t voke::cmd::sync::run() {
           library,
           lookup_compilers_voke_file
         );
+
+        library.repository_cache_path = (
+          voke::platform::voke_system_repository_cache_dir
+          +
+          library.voke_tag
+        );
+
+        voke::log() << "detail: synching at '" << library.repository_cache_path << '\'';
+
+        if (
+          voke::platform::sync_git_repository(
+            library.url,
+            (
+              voke::platform::voke_system_repository_cache_dir
+              +
+              library.voke_tag
+            ),
+            library.git_clone_args
+          ) == voke::result::ERROR_FAILED
+        ) {
+          voke::log() << "error: could not sync repository '" << library.url << "' use -el or --extra-logs";
+          return voke::result::SUCCESS;
+        }
       }
 
       return voke::result::SUCCESS;
@@ -173,7 +200,7 @@ voke::flags_t voke::cmd::sync::run() {
     };
 
     if (is_compiler_type) {
-        return voke::result::SUCCESS;
+      return voke::result::SUCCESS;
     }
   }
 

@@ -7,8 +7,7 @@
 
 namespace voke::cmd::help {
   const static std::vector<std::string> alias {
-    "--help", "-h",
-    "--extra-logs", "-el"
+    "--help", "-h"
   }; 
 
   voke::flags_t assert();

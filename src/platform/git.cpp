@@ -16,9 +16,9 @@ voke::flags_t voke::platform::sync_git_repository(
       << "git clone "
       << url
       << ' '
-      << path_to_clone
+      << clone_args
       << ' '
-      << clone_args;
+      << path_to_clone;
   }
 
   if (voke::shell::result) {

@@ -9,8 +9,8 @@
 voke::shell_result_t voke::shell::result {};
 
 voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
+  voke::log() << "detail: looking for installed compilers...";
   voke::flags_t result {voke::result::SUCCESS};
-
   std::ifstream installed_compilers(voke::platform::voke_system_installed_compilers_path);
   if (installed_compilers.is_open()) {
     std::string line {};
@@ -46,7 +46,6 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
 
 voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   voke::flags_t result {voke::result::SUCCESS};
-
   std::ifstream installed_libraries(voke::platform::voke_system_installed_libraries_path);
   if (installed_libraries.is_open()) {
     std::string line {};
@@ -92,6 +91,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
 voke::flags_t voke::platform::voke_system_fetch_library(
   voke::io::library_t &library
 ) {
+  voke::log() << "detail: loading voke-file at '" << library.voke_path << "'...";
   std::ifstream voke_library(library.voke_path);
   if (voke_library.is_open()) {
     std::string line {};
@@ -126,7 +126,7 @@ voke::flags_t voke::platform::voke_system_fetch_library(
     voke_library.close();
   }
 
-  voke::log() << "detail: " << library.tag << " ; " << library.url;
+  voke::log() << "detail: voke-file at '" << library.voke_path << "' loaded";
   voke::app.libraries.push_back(library);
   return voke::result::SUCCESS;
 }
@@ -140,7 +140,7 @@ voke::flags_t voke::platform::voke_system_lookup_compilers_from_host_library(
       compilers.emplace_back() = entry.path().string()
     };
 
-    voke::log() << "detail: lookup result found voke-file '" << compiler << '"'; 
+    voke::log() << "detail: found voke-file at '" << compiler << '"'; 
   }
 
   return voke::result::SUCCESS;

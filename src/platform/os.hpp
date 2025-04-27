@@ -47,7 +47,7 @@ namespace voke::platform {
     const static std::string voke_system_path {"/opt/vokegpu/voke"};
     const static std::string voke_system_installed_compilers_path {"/opt/vokegpu/voke/installed-compilers.voke"};
     const static std::string voke_system_installed_libraries_path {"/opt/vokegpu/voke/installed-libraries.voke"};
-    const static std::string voke_system_repository_cache_path {"/opt/vokegpu/voke/.repository"};
+    const static std::string voke_system_repository_cache_dir {"/opt/vokegpu/voke/.repository/"};
   #endif
 
   voke::flags_t voke_system_fetch_installed_compilers();

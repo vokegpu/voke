@@ -17,6 +17,7 @@ namespace voke::io {
     std::string cmake_dir {};
     std::string generator {};
     std::string version {};
+    std::string repository_cache_path {};
     std::vector<std::string> include_dirs {};
     std::vector<std::string> binary_win_32_dirs {};
     std::vector<std::string> binary_win_64_dirs {};
