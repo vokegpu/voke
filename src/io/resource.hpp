@@ -13,7 +13,7 @@ namespace voke::io {
     std::string voke_path {};
     std::string tag {};
     std::string url {};
-    std::vector<std::string> git_clone_args {};
+    std::string git_clone_args {};
     std::string cmake_dir {};
     std::string generator {};
     std::string version {};

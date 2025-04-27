@@ -12,7 +12,9 @@
 voke::app_t voke::app {};
 
 int32_t main(int32_t args_size, char **pp_args) {
-  voke::io::fill(args_size, pp_args, voke::app.args);
+  std::vector<std::string> in_args {};
+  voke::io::extract(args_size, pp_args, in_args);
+  voke::io::fill(in_args, voke::app.args);
 
   bool status_ok {};
 

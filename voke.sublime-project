@@ -13,12 +13,12 @@
 		{
 			"name": "Build Windows-64 GNU",
 			"shell_cmd":
-				"cd $folder && cmake -S . -B ./cmake-build -G Ninja && cmake --build ./cmake-build"
+				"cd $folder && cmake -S . -B ./cmake-build -G Ninja -D CMAKE_EXPORT_COMPILE_COMMANDS=1 && cmake --build ./cmake-build"
 		},
 		{
 			"name": "Build Linux-64 Clang",
 			"shell_cmd":
-				"cd $folder && cmake -S . -B ./cmake-build -G Ninja -D CMAKE_CXX_COMPILER=clang++ && cmake --build ./cmake-build"
+				"cd $folder && cmake -S . -B ./cmake-build -G Ninja -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_EXPORT_COMPILE_COMMANDS=1 && cmake --build ./cmake-build"
 		},
 	]
 }

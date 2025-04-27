@@ -57,53 +57,69 @@ std::vector<voke::io::argument_t> voke::io::args_find_all(
 }
 
 void voke::io::push_back_arg_if_necessary(
-  std::vector<voke::io::argument_t> &args,
+  std::vector<voke::io::argument_t> &voke_args,
   voke::io::argument_t &arg
 ) {
   if (!arg.prefix.empty()) {
-    args.push_back(arg);
+    voke_args.push_back(arg);
+  }
+}
+
+void voke::io::extract(
+  int32_t args_size,
+  char **pp_args,
+  std::vector<std::string> &extracted
+) {
+  extracted.reserve(args_size);
+  for (int32_t it {}; it < args_size; it++) {
+    extracted.push_back(pp_args[it]);
   }
 }
 
 void voke::io::fill(
-  int32_t args_size,
-  char **pp_args,
-  std::vector<voke::io::argument_t> &args,
+  std::vector<std::string> &in_args,
+  std::vector<voke::io::argument_t> &voke_args,
   bool should_serialize_quote
 ) {
-  size_t size {static_cast<size_t>(args_size)};
+  size_t size {in_args.size()};
   std::vector<std::string> unserialized_args {};
+
   std::string serialized_quote {};
-
+  std::string quoted {};
   bool found_quote {};
-  bool is_quoted {};
 
-  for (size_t it {}; it < size; it++) {
-    std::string arg {pp_args[it]};
+  for (std::string arg : in_args) {
+    if (arg.empty()) {
+      continue;
+    }
+
     if (should_serialize_quote) {
       found_quote = (arg.front() == '\'' || arg.front() == '"');
-      if (!is_quoted && found_quote) {
-        is_quoted = true;
+      if (quoted.empty() && found_quote) {
+        quoted.clear();
+        quoted += arg.front();
         arg.erase(arg.begin());
       }
 
-      if (is_quoted) {
+      if (!quoted.empty()) {
         serialized_quote += ' ' * !found_quote;
         serialized_quote += arg;
       }
 
-      found_quote = (arg.back() == '\'' || arg.back() == '"');
-      if (is_quoted && found_quote) {
-        arg.erase(arg.end());
-        is_quoted = false;
-        unserialized_args.push_back(arg);
-      } else if (!is_quoted) {
+      found_quote = !quoted.empty() && (arg.back() == quoted.at(0));
+      if (!quoted.empty() && found_quote) {
+        quoted.clear();
+        serialized_quote.pop_back();
+        unserialized_args.push_back(serialized_quote);
+      } else if (quoted.empty()) {
         unserialized_args.push_back(arg);
       }
     } else {
       unserialized_args.push_back(arg);
     }
   }
+
+  size = unserialized_args.size();
 
   bool is_at_end {};
   bool is_an_new_arg {};
@@ -125,7 +141,7 @@ void voke::io::fill(
       !serialized_arg.prefix.empty()
     ) {
       voke::io::push_back_arg_if_necessary(
-        args,
+        voke_args,
         serialized_arg
       );
     }
@@ -146,7 +162,7 @@ void voke::io::fill(
 
     if (is_at_end) {
       voke::io::push_back_arg_if_necessary(
-        args,
+        voke_args,
         serialized_arg
       );
     }

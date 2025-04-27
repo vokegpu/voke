@@ -11,12 +11,13 @@ namespace voke {
     static std::ostringstream buffer;
     static bool buffered;
     static bool tracked;
+    static std::string error;
     static int32_t status;
   public:
     static int32_t flush() {
       if (voke::log::buffered) {
         #if defined(__ANDROID__)
-          __android_log_print(ANDROID_LOG_VERBOSE, "EKG", "%s", voke::log::buffer.str().c_str());
+          __android_log_print(ANDROID_LOG_VERBOSE, "VOKE", "%s", voke::log::buffer.str().c_str());
         #else
           std::cout << voke::log::buffer.str();
         #endif

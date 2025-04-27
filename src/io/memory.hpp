@@ -21,7 +21,10 @@ namespace voke {
 }
 
 namespace voke::io {
-  std::vector<std::string> split(std::string &str, char delimiter);
+  std::vector<std::string> split(
+    std::string &str,
+    std::string delimiter
+  );
 }
 
 #endif

@@ -8,20 +8,16 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
   std::string &line,
   voke::io::compiler_t &compiler
 ) {
-  std::vector<std::string> splitted {voke::io::split(line, ' ')};
-  splitted.insert(splitted.begin(), "meow ");
+  std::vector<std::string> in_args {voke::io::split(line, " ")};
+  in_args.insert(in_args.begin(), "meow ");
 
-  std::vector<char*> splitted_cstr {};
-  for (std::string &raw_arg : splitted) {
-    splitted_cstr.push_back(raw_arg.data());
-  }
+  std::vector<voke::io::argument_t> voke_args {};
+  voke::io::fill(in_args, voke_args, true);
 
-  std::vector<voke::io::argument_t> args {};
-  voke::io::fill(splitted_cstr.size(), splitted_cstr.data(), args);
-
-  for (voke::io::argument_t &arg : args) {
+  for (voke::io::argument_t &arg : voke_args) {
     if (arg.prefix == "--tag") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -30,6 +26,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--binary-dir") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -38,6 +35,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--lib-dir") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -46,6 +44,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--include-dir") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -54,6 +53,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--c") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -62,6 +62,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--cpp") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -70,6 +71,7 @@ voke::flags_t voke::io::extract_installed_compiler_info_from_line(
 
     if (arg.prefix == "--version") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -84,20 +86,16 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
   std::string &line,
   voke::io::library_t &library
 ) {
-  std::vector<std::string> splitted {voke::io::split(line, ' ')};
-  splitted.insert(splitted.begin(), "meow ");
+  std::vector<std::string> in_args {voke::io::split(line, " ")};
+  in_args.insert(in_args.begin(), "meow ");
 
-  std::vector<char*> splitted_cstr {};
-  for (std::string &raw_arg : splitted) {
-    splitted_cstr.push_back(raw_arg.data());
-  }
+  std::vector<voke::io::argument_t> voke_args {};
+  voke::io::fill(in_args, voke_args, true);
 
-  std::vector<voke::io::argument_t> args {};
-  voke::io::fill(splitted_cstr.size(), splitted_cstr.data(), args);
-
-  for (voke::io::argument_t &arg : args) {
+  for (voke::io::argument_t &arg : voke_args) {
     if (arg.prefix == "--tag") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -106,6 +104,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--version") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -114,6 +113,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--libs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -122,6 +122,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--includes") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -130,6 +131,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--compiler") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -138,6 +140,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--type") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -146,6 +149,7 @@ voke::flags_t voke::io::extract_installed_library_info_from_line(
 
     if (arg.prefix == "--arch") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -160,20 +164,16 @@ voke::flags_t voke::io::extract_library_info_from_line(
   std::string &line,
   voke::io::library_t &library
 ) {
-  std::vector<std::string> splitted {voke::io::split(line, ' ')};
-  splitted.insert(splitted.begin(), "meow ");
+  std::vector<std::string> in_args {voke::io::split(line, " ")};
+  in_args.insert(in_args.begin(), "meow ");
 
-  std::vector<char*> splitted_cstr {};
-  for (std::string &raw_arg : splitted) {
-    splitted_cstr.push_back(raw_arg.data());
-  }
+  std::vector<voke::io::argument_t> voke_args {};
+  voke::io::fill(in_args, voke_args, true);
 
-  std::vector<voke::io::argument_t> args {};
-  voke::io::fill(splitted_cstr.size(), splitted_cstr.data(), args);
-
-  for (voke::io::argument_t &arg : args) {
+  for (voke::io::argument_t &arg : voke_args) {
     if (arg.prefix == "--type") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -182,14 +182,16 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--tag") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
-      voke::log() << library.tag;
+      library.tag = arg.values.at(0);
     }
 
     if (arg.prefix == "--url") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -198,14 +200,16 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--git-clone-args") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
-      library.git_clone_args = arg.values;
+      library.git_clone_args = arg.values.at(0);
     }
 
     if (arg.prefix == "--cmake-dir") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -214,6 +218,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--generator") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -222,6 +227,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--include-dirs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -230,6 +236,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--binary-win-32-dirs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -238,6 +245,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--binary-win-64-dirs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -246,6 +254,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--binary-linux-32-dirs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 
@@ -254,6 +263,7 @@ voke::flags_t voke::io::extract_library_info_from_line(
 
     if (arg.prefix == "--binary-linux-64-dirs") {
       if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
         return voke::result::ERROR_FAILED;
       }
 

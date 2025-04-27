@@ -27,10 +27,15 @@ namespace voke::io {
     std::vector<std::string> prefixes
   );
 
-  void fill(
+  void extract(
     int32_t args_size,
     char **pp_args,
-    std::vector<voke::io::argument_t> &args,
+    std::vector<std::string> &in_args
+  );
+
+  void fill(
+    std::vector<std::string> &in_args,
+    std::vector<voke::io::argument_t> &voke_args,
     bool should_serialize_quote = false
   );
 
