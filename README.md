@@ -14,7 +14,7 @@ cmake -S . -B ./cmake-build -G Ninja
 cmake --build ./cmake-build
 ```
 
-Soon `voke` must bootstrap it-self for installs dependencies, while no pre-compiled binary is released, no bootstrap is possible.
+No C++ library is needed, just external dependencies tools like CMake, Ninja, Git. Soon `voke` must support Ninja, CMake sync --- as a part of fundementals compilation support.
 
 ## Commands
 
