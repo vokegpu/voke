@@ -2,7 +2,7 @@
 
 Independent lightweight cross-platform C/C++ library-manager.
 
-`voke` works with syncing libraries and compilers from the [voke-repositories](https://github.com/voke-libraries), where all compilers and libraries exists mapped, mapped with voke-files, `.voke`-file describe fixed arguments to map library per compiler target, but do not worry, it is mainted by @VokeGpu team (Rina and cats).  
+`voke` works with syncing libraries and compilers from the [voke-repositories](https://github.com/voke-libraries), where all compilers and libraries exists mapped, mapped with voke-files, `.voke`-file describe fixed arguments to map library per compiler target/or compiler, but do not worry, it is mainted by @VokeGpu team (Rina and cats).  
 
 On initial phase, `voke` has plans to implement support for Windows, until focus on Linux, [if you want to contribute check the coding guide-style here](https://github.com/vokegpu/code-of-conduct-and-style-guide), thanks.
 
