@@ -2,6 +2,8 @@
 
 Independent lightweight cross-platform C/C++ library-manager.
 
+`voke` works with syncing libraries and compilers from the [voke-repositories](https://github.com/voke-libraries), where all compilers and libraries exists mapped, mapped with voke-files, `.voke`-file describe fixed arguments to map library per compiler target, but do not worry, it is mainted by @VokeGpu team (Rina and cats).  
+
 On initial phase, `voke` has plans to implement support for Windows, until focus on Linux, [if you want to contribute check the coding guide-style here](https://github.com/vokegpu/code-of-conduct-and-style-guide), thanks.
 
 All you need to compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
@@ -38,6 +40,25 @@ use:
   voke | -v                    output software version
        | --version
 ```
+
+### Libraries
+
+When syncing a library, you can specify which compiler target you want.
+
+For example sync [SDL](https://www.libsdl.org/) with your [Clang-Mingw64](https://github.com/mstorsjo/llvm-mingw) on Windows:
+`voke -s libsdl2 -c clang-mingw64`.
+
+### Compilers
+
+When using `voke`, there is a standard format to use, it is a cross-platform library manager, you need to specifiy which C/C++ target compiler you want to use.  
+For x86_64 compilers, tag suffix MUST be `64`, as example: `clang64` `clang-msvc64`. For x86 compilers, suffix MUST be `32`, as example: `clang32` `clang-msvc32`.  
+
+| OS | Tag |
+| - | - |
+| Windows | `clang-msvc64` `clang-msvc32` `clang-mingw64` `clang-mingw64` `mingw64` `mingw32` |
+| Linux  | `clang64`, `clang32`, `gnu64` `gnu32` |
+
+A compiler format must be like this because of how `voke` works, `voke` serialize everything in a way to support cross-platform.
 
 ## Technical Details
 
