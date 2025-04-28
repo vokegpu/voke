@@ -14,16 +14,29 @@ Soon `voke` must bootstrap it-self for installs dependencies, while no pre-compi
 
 ## Commands
 
-Of course `voke` is not done yet, it is on initial phase, but already include some commands.
-
 Note: You must have `git` installed, [visit here for download](https://git-scm.com/).
 
 ```sh
-voke -v
-voke --version
+use:
+  voke | -s *                  sync a C/C++ library or a compiler
+       | --sync *
+        | -v *                 optional: version to look-up
+        | --version *
+        | -b                   optional: pre-compiled binary
+        | --binary
+        | -c                   optional: specify compilers to sync the library, e.g: clang-msvc64 clang-mingw64 etc 
+        | --compilers
 
-voke -h
-voke --help
+  voke | -r *                  remove a C/C++ library or a compiler from the system
+       | --remove *
+
+  voke | -sac                  sync all C/C++ compilers-installed in voke-system 
+       | --sync-all-compilers
+       | -sal                  sync all C/C++ libraries-installed in voke-system 
+       | --sync-all-libraries
+
+  voke | -v                    output software version
+       | --version
 ```
 
 ## Technical Details
