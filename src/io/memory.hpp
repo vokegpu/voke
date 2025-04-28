@@ -26,6 +26,12 @@ namespace voke::io {
     std::string &str,
     std::string delimiter
   );
+
+  void replace(
+    std::string &str_to_replace,
+    std::string to_replace,
+    std::string replace
+  );
 }
 
 #endif

@@ -26,7 +26,7 @@ voke::flags_t voke::platform::sync_git_repository(
     return voke::result::ERROR_FAILED;
   }
 
-  voke::shell() 
+  voke::shell()
     << "cd "
     << path_to_clone
     << " && git pull";

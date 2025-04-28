@@ -189,6 +189,25 @@ voke::flags_t voke::io::extract_library_info_from_line(
       library.tag = arg.values.at(0);
     }
 
+    if (arg.prefix == "--target") {
+      if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
+        return voke::result::ERROR_FAILED;
+      }
+
+      library.target = arg.values;
+    }
+
+    if (arg.prefix == "--build-system") {
+      if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
+        return voke::result::ERROR_FAILED;
+      }
+
+      library.build_system = arg.values.at(0);
+      voke::log() << library.build_system;
+    }
+
     if (arg.prefix == "--url") {
       if (arg.values.empty()) {
         voke::log::error = arg.prefix;
@@ -205,24 +224,6 @@ voke::flags_t voke::io::extract_library_info_from_line(
       }
 
       library.git_clone_args = arg.values.at(0);
-    }
-
-    if (arg.prefix == "--cmake-dir") {
-      if (arg.values.empty()) {
-        voke::log::error = arg.prefix;
-        return voke::result::ERROR_FAILED;
-      }
-
-      library.cmake_dir = arg.values.at(0);
-    }
-
-    if (arg.prefix == "--generator") {
-      if (arg.values.empty()) {
-        voke::log::error = arg.prefix;
-        return voke::result::ERROR_FAILED;
-      }
-
-      library.generator = arg.values.at(0);
     }
 
     if (arg.prefix == "--include-dirs") {
@@ -268,6 +269,15 @@ voke::flags_t voke::io::extract_library_info_from_line(
       }
 
       library.binary_linux_64_dirs = arg.values;
+    }
+
+    if (arg.prefix == "--run") {
+      if (arg.values.empty()) {
+        voke::log::error = arg.prefix;
+        return voke::result::ERROR_FAILED;
+      }
+
+      library.run = arg.values.at(0);
     }
   }
 

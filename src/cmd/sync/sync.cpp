@@ -144,6 +144,12 @@ voke::flags_t voke::cmd::sync::run() {
 
       voke::log() << "detail: found, synching at '" << library.voke_path << '\''; 
 
+      library.repository_cache_path = (
+        voke::platform::voke_system_repository_cache_dir
+        +
+        library.voke_tag
+      );
+
       args = voke::io::args_find_all({"-v", "--version"});
       if (args.size() == 1) {
 
@@ -168,12 +174,6 @@ voke::flags_t voke::cmd::sync::run() {
           lookup_compilers_voke_file
         );
 
-        library.repository_cache_path = (
-          voke::platform::voke_system_repository_cache_dir
-          +
-          library.voke_tag
-        );
-
         voke::log() << "detail: synching at '" << library.repository_cache_path << '\'';
 
         if (
@@ -186,6 +186,8 @@ voke::flags_t voke::cmd::sync::run() {
           voke::log() << "error: could not sync repository '" << library.url << "' use -el or --extra-logs";
           return voke::result::SUCCESS;
         }
+
+        voke::platform::compile_libraries();
       }
 
       return voke::result::SUCCESS;

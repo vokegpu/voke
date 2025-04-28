@@ -159,3 +159,98 @@ voke::flags_t voke::platform::voke_system_fetch_compilers_info_from_host_library
 
   return voke::result::SUCCESS;
 }
+
+voke::flags_t voke::platform::compile_libraries(
+) {
+  voke::result result {};
+  for (voke::io::library_t &library : voke::app.libraries) {
+    if (library.target.empty()) {
+      voke::log() << "warning: skipping library voke-file '" << library.voke_path << "', no C/C++ compiler target specified";
+      continue;
+    }
+
+    result = voke::result::SUCCESS_PASS;
+    for (voke::io::compiler_t &compiler : voke::app.installed_compilers) {
+      for (std::string &target : library.target) {
+        if (target == compiler.tag) {
+          result = voke::result::SUCCESS;
+          break;
+        }
+      }
+
+      if (result == voke::result::SUCCESS) {
+        result = voke::result::SUCCESS_PASS;
+
+        voke::log() << "detail: building library '" << library.voke_tag << "' for C/C++ target '" << compiler.tag << "'...";
+        
+        voke::io::replace(
+          library.run,
+          "\\$dir",
+          library.repository_cache_path
+        );
+
+        voke::io::replace(
+          library.run,
+          "\\$cpp",
+          compiler.binary_dir + "/" + compiler.cpp_compiler
+        );
+
+        voke::io::replace(
+          library.run,
+          "\\$c",
+          compiler.binary_dir + "/" + compiler.c_compiler
+        );
+
+        voke::io::replace(
+          library.run,
+          "$cmake-build-dir",
+          "./cmake-build"
+        );
+
+        voke::shell()
+          << "cd "
+          << library.repository_cache_path
+          << " && "
+          << library.run;
+
+        result = (
+          voke::shell::result
+          ==
+          0
+          ? voke::result::SUCCESS : voke::result::ERROR_FAILED
+        );
+
+        if (
+          result == voke::result::SUCCESS
+          &&
+          !library.repository_cache_path.empty()
+          &&
+          library.build_system == "cmake"
+        ) {
+          voke::shell()
+            << "sudo rm -r "
+            << library.repository_cache_path
+            << "/cmake-build";
+        }
+
+        break;
+      }
+    }
+
+    switch (result) {
+    case voke::result::SUCCESS_PASS:
+      voke::log() << "warning: nothing happened actually";
+      break;
+    case voke::result::SUCCESS:
+      voke::log() << "detail: library '" << library.voke_tag << "' successfully build";
+      break;
+    case voke::result::ERROR_FAILED:
+      voke::log() << "detail: could not build library '" << library.voke_tag << "'";
+      break;
+    default:
+      break;
+    }
+  }   
+
+  return voke::result::SUCCESS;
+}
