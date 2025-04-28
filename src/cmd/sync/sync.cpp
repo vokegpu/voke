@@ -145,16 +145,16 @@ voke::flags_t voke::cmd::sync::run() {
       voke::log() << "detail: found, synching at '" << library.voke_path << '\''; 
 
       args = voke::io::args_find_all({"-v", "--version"});
-      if (op == voke::sync_operation::OP_QUERY_VERSION) {
+      if (args.size() == 1) {
 
       }
 
       args = voke::io::args_find_all({"-b", "--binary"});
-      if (op == voke::sync_operation::OP_QUERY_BINARY) {
+      if (args.size() == 1) {
         
       }
 
-      if (op == voke::sync_operation::OP_COMPILE) {
+      if (args.empty()) {
         voke::log() << "detail: looking for voke-files...";
 
         std::vector<std::string> lookup_compilers_voke_file {};
@@ -180,7 +180,7 @@ voke::flags_t voke::cmd::sync::run() {
           voke::platform::sync_git_repository(
             library.url,
             library.repository_cache_path,
-            library.git_clone_args // @TODO: fix git clone args not working
+            library.git_clone_args
           ) == voke::result::ERROR_FAILED
         ) {
           voke::log() << "error: could not sync repository '" << library.url << "' use -el or --extra-logs";

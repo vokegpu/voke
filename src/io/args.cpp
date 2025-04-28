@@ -96,20 +96,18 @@ void voke::io::fill(
     if (should_serialize_quote) {
       found_quote = (arg.front() == '\'' || arg.front() == '"');
       if (quoted.empty() && found_quote) {
-        quoted.clear();
-        quoted += arg.front();
-        arg.erase(arg.begin());
+        serialized_quote.clear();
+        quoted = arg.front();
       }
 
       if (!quoted.empty()) {
-        serialized_quote += ' ' * !found_quote;
+        if (!found_quote) serialized_quote += ' ';
         serialized_quote += arg;
       }
 
       found_quote = !quoted.empty() && (arg.back() == quoted.at(0));
       if (!quoted.empty() && found_quote) {
         quoted.clear();
-        serialized_quote.pop_back();
         unserialized_args.push_back(serialized_quote);
       } else if (quoted.empty()) {
         unserialized_args.push_back(arg);
@@ -132,7 +130,7 @@ void voke::io::fill(
       continue;
     }
 
-    is_an_new_arg = arg.at(0) == '-';
+    is_an_new_arg = arg.at(0) == '-' && arg.find(" ") == std::string::npos;
     is_at_end = it == size - 1;
 
     if (
@@ -154,7 +152,16 @@ void voke::io::fill(
       serialized_arg.raw += serialized_arg.prefix;
     }
 
-    if (arg.at(0) != '-') {
+    if (arg.at(0) != '-' || (arg.at(0) == '-' && arg.find(" ") != std::string::npos)) {
+      char c {};
+      if ((c = arg.at(0)) == '\'' || c == '"') {
+        arg.erase(arg.begin());
+      }
+
+      if (arg.at(arg.size() - !arg.empty()) == c) {
+        arg.pop_back();
+      }
+
       serialized_arg.values.push_back(arg);
       serialized_arg.raw += ' ';
       serialized_arg.raw += arg;

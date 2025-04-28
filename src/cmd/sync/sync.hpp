@@ -6,12 +6,6 @@
 #include <vector>
 #include <string>
 
-namespace voke {
-  enum sync_operation {
-    OP_COMPILE
-  };
-}
-
 namespace voke::cmd::sync {
   const static std::vector<std::string> alias {
     "-s", "--sync",

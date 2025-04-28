@@ -34,6 +34,6 @@ voke::flags_t voke::platform::sync_git_repository(
   return (
     voke::shell::result
     ?
-    voke::result::SUCCESS : voke::result::ERROR_FAILED
+    voke::result::ERROR_FAILED : voke::result::SUCCESS
   );
 }

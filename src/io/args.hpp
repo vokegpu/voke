@@ -47,21 +47,4 @@ namespace voke::io {
   voke::flags_t throw_unknown_command_or_arguments();
 }
 
-
-namespace voke {
-  template<typename t>
-  t op(
-    std::vector<std::string> to_find_args,
-    t return_case
-  ) {
-    return (
-      voke::io::args_find_all(to_find_args).size() == 1
-      ?
-      return_case
-      :
-      static_cast<size_t>(0)
-    );
-  }
-}
-
 #endif

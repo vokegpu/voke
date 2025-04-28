@@ -6,6 +6,7 @@
 #include "cmd/help/help.hpp"
 #include "cmd/version/version.hpp"
 #include "cmd/sync/sync.hpp"
+#include "platform/git.hpp"
 
 #include <iostream>
 
