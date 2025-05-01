@@ -17,7 +17,7 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::io::extract(args_size, pp_args, in_args);
   voke::io::fill(in_args, voke::app.args);
 
-  std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-el", "--extra-logs"})};
+  std::vector<voke::argument_t> args {voke::io::args_find_all({"-el", "--extra-logs"})};
   if (args.size() == 1 && !args.at(0).values.empty()) {
     voke::io::throw_unknown_command_or_arguments();
     return voke::log::flush();

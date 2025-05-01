@@ -7,7 +7,7 @@ voke::flags_t voke::cmd::version::assert() {
     return voke::result::SUCCESS_PASS;
   }
 
-  std::vector<voke::io::argument_t> args {
+  std::vector<voke::argument_t> args {
     voke::io::args_find_all(
       voke::cmd::version::alias
     )

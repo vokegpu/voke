@@ -6,10 +6,10 @@
 #include <regex>
 
 voke::flags_t voke::io::args_contains_any(
-  std::vector<std::string> prefixes
+  const std::vector<std::string> &prefixes
 ) {
-  for (voke::io::argument_t &arg : voke::app.args) {
-    for (std::string &prefix : prefixes) {
+  for (voke::argument_t &arg : voke::app.args) {
+    for (const std::string &prefix : prefixes) {
       if (prefix == arg.prefix) {
         return voke::result::SUCCESS;
       }
@@ -20,11 +20,11 @@ voke::flags_t voke::io::args_contains_any(
 }
 
 voke::flags_t voke::io::args_contains_any_non(
-  std::vector<std::string> prefixes
+  const std::vector<std::string> &prefixes
 ) {
   bool contains_any {};
-  for (voke::io::argument_t &arg : voke::app.args) {
-    for (std::string &prefix : prefixes) {
+  for (voke::argument_t &arg : voke::app.args) {
+    for (const std::string &prefix : prefixes) {
       if (
           (contains_any = prefix == arg.prefix)
       ) {
@@ -40,12 +40,12 @@ voke::flags_t voke::io::args_contains_any_non(
   return voke::result::ERROR_TIMEOUT;
 }
 
-std::vector<voke::io::argument_t> voke::io::args_find_all(
-  std::vector<std::string> prefixes
+std::vector<voke::argument_t> voke::io::args_find_all(
+  const std::vector<std::string> &prefixes
 ) {
-  std::vector<voke::io::argument_t> found_args {};
-  for (voke::io::argument_t &arg : voke::app.args) {
-    for (std::string &prefix : prefixes) {
+  std::vector<voke::argument_t> found_args {};
+  for (voke::argument_t &arg : voke::app.args) {
+    for (const std::string &prefix : prefixes) {
       if (arg.prefix == prefix) {
         found_args.push_back(arg);
         break;
@@ -57,8 +57,8 @@ std::vector<voke::io::argument_t> voke::io::args_find_all(
 }
 
 void voke::io::push_back_arg_if_necessary(
-  std::vector<voke::io::argument_t> &voke_args,
-  voke::io::argument_t &arg
+  std::vector<voke::argument_t> &voke_args,
+  voke::argument_t &arg
 ) {
   if (!arg.prefix.empty()) {
     voke_args.push_back(arg);
@@ -78,7 +78,7 @@ void voke::io::extract(
 
 void voke::io::fill(
   std::vector<std::string> &in_args,
-  std::vector<voke::io::argument_t> &voke_args,
+  std::vector<voke::argument_t> &voke_args,
   bool should_serialize_quote
 ) {
   size_t size {in_args.size()};
@@ -122,7 +122,7 @@ void voke::io::fill(
   bool is_at_end {};
   bool is_an_new_arg {};
 
-  voke::io::argument_t serialized_arg {};  
+  voke::argument_t serialized_arg {};  
   for (size_t it {1}; it < size; it++) {
     std::string arg {unserialized_args.at(it)};
 

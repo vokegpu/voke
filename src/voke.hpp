@@ -17,11 +17,11 @@ namespace voke {
   public:
     voke::verbose_level verbose_level {voke::verbose_level::LEVEL_ONE};
     std::string version {"0.1.0"};
-    std::vector<voke::io::argument_t> args {};
-    std::vector<voke::io::compiler_t> installed_compilers {};
-    std::vector<voke::io::compiler_t> compilers {};
-    std::vector<voke::io::library_t> installed_libraries {};
-    std::vector<voke::io::library_t> libraries {};
+    std::vector<voke::argument_t> args {};
+    std::vector<voke::compiler_t> installed_compilers {};
+    std::vector<voke::compiler_t> compilers {};
+    std::vector<voke::library_t> installed_libraries {};
+    std::vector<voke::library_t> libraries {};
   } app;
 }
 

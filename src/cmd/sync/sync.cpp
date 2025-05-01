@@ -11,7 +11,7 @@ voke::flags_t voke::cmd::sync::assert() {
     return voke::result::SUCCESS_PASS;
   }
 
-  std::vector<voke::io::argument_t> args {
+  std::vector<voke::argument_t> args {
     voke::io::args_find_all(
       voke::cmd::sync::alias
     )
@@ -109,9 +109,9 @@ voke::flags_t voke::cmd::sync::run() {
   voke::platform::voke_system_fetch_installed_libraries();
 
   std::string arg_builder {};
-  std::vector<voke::io::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
+  std::vector<voke::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
   if (args.size() == 1 && args.at(0).values.size() == 1 && args.at(0).values.at(0).size() > 3) {
-    voke::io::argument_t arg {
+    voke::argument_t arg {
       args.at(0)
     };
 
@@ -126,7 +126,7 @@ voke::flags_t voke::cmd::sync::run() {
     if (
       is_library_type
     ) {
-      voke::io::library_t library {
+      voke::library_t library {
         .voke_tag = args.at(0).values.at(0)
       };
 

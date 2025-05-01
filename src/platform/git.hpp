@@ -14,7 +14,7 @@ namespace voke::platform {
     std::string clone_args = ""
   );
 
-  void voke_system_fetch_voke_library_git(voke::io::library_t &library);
+  void voke_system_fetch_voke_library_git(voke::library_t &library);
 }
 
 #endif
