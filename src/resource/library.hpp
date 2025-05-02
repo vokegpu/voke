@@ -13,7 +13,7 @@ namespace voke {
     std::string voke_path {};
     std::string tag {};
     std::string build_system {};
-    std::vector<std::string> target {};
+    std::vector<std::string> targets {};
     std::string url {};
     std::string git_clone_args {};
     std::string version {};
@@ -34,6 +34,11 @@ namespace voke {
 }
 
 namespace voke::resource {
+  voke::flags_t serialize_library_from_argument(
+    voke::argument_t &argument,
+    voke::library_t &library
+  );
+
   voke::flags_t serialize_library_from_argument_list(
     voke::argument_list_t &argument_list,
     voke::library_t &library

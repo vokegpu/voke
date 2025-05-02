@@ -1,25 +1,44 @@
 #include "vokefile.hpp"
 
-voke::flags_t voke::io::vokefile_parser_to_args(
-  voke::vokefile_parser_info &parser_info,
-  voke::argument_list_t &argument_list
+voke::flags_t voke::io::vokefile_get_line_list(
+  std::string path,
+  voke::vokefile_line_list_t &line_list
 ) {
-  voke::flags_t result {voke::result::SUCCESS};
+  voke::flags_t result {voke::result::ERROR_FAILED};
   std::ifstream file(parser_info.path);
 
   if (file.is_open()) {
-    std::string line {};
-    std::vector<std::string> splitted {};
-    
+    result = voke::result::SUCCESS;
+    while (getline(file, line)) {
+      if (line.empty()) {
+        continue;
+      }
+
+      line_list.push_back(line);
+    }
+
+    file.close();
+  }
+
+  return line_list;
+}
+
+voke::flags_t voke::io::parser(
+  voke::vokefile_parser_info_t &parser_info,
+  voke::argument_list_t &argument_list
+) {
+  voke::flags_t result {voke::result::SUCCESS};
+  if (!parser_info.line_list.empty()) {
     size_t argument_list_size {}
     size_t line_count {1};
     
+    std::vector<std::string> splitted {};
     voke::argument_list_t filled_args {};
 
     bool must {};
     bool contains {};
 
-    while (getline(file, line)) {
+    for (std::string &line : parser_info.line_list) {
       if (line.empty()) {
         continue;
       }
@@ -90,8 +109,6 @@ voke::flags_t voke::io::vokefile_parser_to_args(
 
       line_count++;
     }
-
-    file.close();
   }
 
   return result;

@@ -24,6 +24,11 @@ namespace voke {
 }
 
 namespace voke::resource {
+  voke::flags_t serialize_compiler_from_argument(
+    voke::argument_t &argument,
+    voke::compiler_t &compiler
+  );
+
   voke::flags_t serialize_compiler_from_argument_list(
     voke::argument_list_t &argument_list,
     voke::compiler_t &compiler

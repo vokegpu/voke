@@ -20,7 +20,7 @@ namespace voke::platform {
 
   voke::flags_t voke_system_fetch_installed_compilers();
   voke::flags_t voke_system_fetch_installed_libraries();
-  voke::flags_t voke_system_fetch_library(voke::library_t &library);
+  voke::flags_t voke_system_fetch_sync_library_target(voke::library_t &library);
   voke::flags_t voke_system_lookup_compilers_from_host_library(voke::library_t &library, std::vector<std::string> &compilers);
   voke::flags_t voke_system_fetch_compilers_info_from_host_library(voke::library_t &library, std::vector<std::string> &compilers);
   voke::flags_t compile_libraries();
