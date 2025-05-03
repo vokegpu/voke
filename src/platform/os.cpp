@@ -1,5 +1,3 @@
-#include "resource/compiler.hpp"
-#include "resource/library.hpp"
 #include "os.hpp"
 #include "io/log.hpp"
 #include "voke.hpp"
@@ -8,18 +6,16 @@
 #include <iostream>
 #include <filesystem>
 
-voke::shell_result_t voke::shell::result {};
-
 voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   voke::log() << "detail: looking for installed compilers...";
   voke::flags_t result {voke::result::SUCCESS};
 
-  voke::vokefile_line_list_t line_list {};
-  voke::io::vokefile_get_line_list(voke::platform::voke_system_installed_compilers_path, line_list);
+  std::vector<std::string> lines {};
+  voke::io::voekfile_read_lines(voke::platform::voke_system_installed_compilers_path, lines);
 
   voke::vokefile_parser_info_t parser_info {
     .tag = "installed-compilers.voke",
-    .line_list = line_list, 
+    .lines = lines, 
     .expect = {
       {{"--tag"}, 1, true},
       {{"--binary-dir"}, 1, true},
@@ -31,14 +27,14 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     }
   };
 
-  voke::argument_list_t args {};
+  std::vector<voke::argument_t> args {};
   voke::vokefile_parser_to_args(
     parser_info,
     args
   );
 
   voke::compiler_t compiler {};
-  voke::argument_list_t compiler_args(1);
+  std::vector<voke::argument_t> compiler_args(1);
   size_t line {1};
 
   for (voke::argument_t &argument : args) {
@@ -77,12 +73,12 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   voke::log() << "detail: looking for installed libraries...";
   voke::flags_t result {voke::result::SUCCESS};
 
-  voke::vokefile_line_list_t line_list {};
-  voke::io::vokefile_get_line_list(voke::platform::voke_system_installed_libraries_path, line_list);
+  std::vector<std::string> lines {};
+  voke::io::voekfile_read_lines(voke::platform::voke_system_installed_libraries_path, lines);
 
   voke::vokefile_parser_info_t parser_info {
     .tag = "installed-libraries.voke",
-    .line_list = line_list,
+    .lines = lines,
     .expect = {
       {{"--tag"}, voke::not_empty, true},
       {{"--headers"}, voke::any, false},
@@ -94,7 +90,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     }
   };
 
-  voke::argument_list_t args {};
+  std::vector<voke::argument_t> args {};
   voke::vokefile_parser_to_args(
     parser_info,
     args
@@ -140,12 +136,12 @@ voke::flags_t voke::platform::voke_system_fetch_sync_library_target(
 ) {
   voke::flags_t result {voke::result::SUCCESS};
   
-  voke::vokefile_line_list_t line_list {};
-  voke::io::vokefile_get_line_list(library.voke_path, line_list);
+  std::vector<std::string> lines {};
+  voke::io::voekfile_read_lines(library.voke_path, lines);
 
   voke::vokefile_parser_info_t parser_info {
     .tag = library.voke_tag,
-    .line_list = line_list, 
+    .lines = lines, 
     .expect = {
       {{"--tag"}, voke::not_empty, true},
       {{"--url"}, voke::not_empty, true},
@@ -156,9 +152,8 @@ voke::flags_t voke::platform::voke_system_fetch_sync_library_target(
       {{"--include-dirs"}, voke::not_empty, true},
     }
   };
-
   
-  voke::argument_list_t args {};
+  std::vector<voke::argument_t> args {};
   voke::vokefile_parser_to_args(
     parser_info,
     args

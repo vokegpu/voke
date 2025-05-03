@@ -59,7 +59,7 @@ voke::flags_t voke::resource::serialize_compiler_from_argument(
 }
 
 voke::flags_t voke::resource::serialize_compiler_from_argument_list(
-  voke::argument_list_t &argument_list, 
+  std::vector<voke::argument_t> &argument_list, 
   voke::compiler_t &compiler
 ) {
   voke::flags_t result {};

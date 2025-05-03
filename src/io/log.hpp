@@ -10,7 +10,6 @@ namespace voke {
   public:
     static std::ostringstream buffer;
     static bool buffered;
-    static bool tracked;
     static std::string error;
     static int32_t status;
   public:
@@ -27,22 +26,6 @@ namespace voke {
       }
 
       return voke::log::status;
-    }
-
-    static void print(std::string_view msg) {
-      std::cout << msg << std::endl;
-    }
-
-    template<typename t>
-    static void trace(bool should, t trace, bool interrupt_runtime = false) {
-      if (!should) {
-        return;
-      }
-
-      std::cout << trace << std::endl;
-      if (interrupt_runtime) {
-        std::terminate();
-      }
     }
   public:
     template<typename t>

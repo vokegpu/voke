@@ -5,15 +5,21 @@
 #include <string>
 
 namespace voke {
+  enum verbose_level {
+    LEVEL_ONE,
+    LEVEL_TWO
+  };
+
   class shell {
   public:
+    static voke::verbose_level verbose_level;
     static voke::shell_result_t result;
   protected:
     std::ostringstream raw {};
   public:
     ~shell() {
       voke::shell_result_t result {};
-      switch (voke::app.verbose_level) {
+      switch (voke::shell::verbose_level) {
       case voke::verbose_level::LEVEL_ONE:
         #if defined(_WIN32)
           this->raw << " >nul 2>&1";

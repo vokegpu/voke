@@ -128,7 +128,7 @@ voke::flags_t voke::resource::serialize_library_from_argument(
 }
 
 voke::flags_t voke::resource::serialize_library_from_argument_list(
-  voke::argument_list_t &argument_list,
+  std::vector<voke::argument_t> &argument_list,
   voke::library_t &library
 ) {
   voke::flags_t result {};

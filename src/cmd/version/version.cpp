@@ -8,7 +8,7 @@ voke::flags_t voke::cmd::version::assert() {
   }
 
   std::vector<voke::argument_t> args {
-    voke::io::args_find_all(
+    voke::argument::find(
       voke::cmd::version::alias
     )
   };

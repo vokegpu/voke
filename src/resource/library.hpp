@@ -40,7 +40,7 @@ namespace voke::resource {
   );
 
   voke::flags_t serialize_library_from_argument_list(
-    voke::argument_list_t &argument_list,
+    std::vector<voke::argument_t> &argument_list,
     voke::library_t &library
   );
 }

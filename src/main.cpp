@@ -1,5 +1,5 @@
 #include "io/log.hpp"
-#include "io/args.hpp"
+#include "argument/argument.hpp"
 #include "io/memory.hpp"
 #include "voke.hpp"
 
@@ -13,42 +13,25 @@
 voke::app_t voke::app {};
 
 int32_t main(int32_t args_size, char **pp_args) {
-  std::vector<std::string> in_args {};
-  voke::io::extract(args_size, pp_args, in_args);
-  voke::io::fill(in_args, voke::app.args);
+  voke::app.raw_args(pp_args, pp_args + args_size);
 
-  std::vector<voke::argument_t> args {voke::io::args_find_all({"-el", "--extra-logs"})};
-  if (args.size() == 1 && !args.at(0).values.empty()) {
-    voke::io::throw_unknown_command_or_arguments();
-    return voke::log::flush();
-  }
-
-  voke::app.verbose_level = (
-    args.empty() ? voke::verbose_level::LEVEL_ONE : voke::verbose_level::LEVEL_TWO
+  voke::cmd::add(
+    voke::cmd::version::assert,
+    voke::cmd::version::run
   );
 
-  bool status_ok {};
-
-  status_ok = (
-    voke::cmd::version::assert() == voke::result::SUCCESS
-    &&
-    voke::cmd::version::run() == voke::result::SUCCESS
+  voke::cmd::add(
+    voke::cmd::sync::assert,
+    voke::cmd::sync::run
   );
 
-  status_ok = status_ok || (
-    voke::cmd::help::assert() == voke::result::SUCCESS
-    &&
-    voke::cmd::help::run() == voke::result::SUCCESS
+  voke::cmd::add(
+    voke::cmd::help::assert,
+    voke::cmd::help::run
   );
 
-  status_ok = status_ok || (
-    voke::cmd::sync::assert() == voke::result::SUCCESS
-    &&
-    voke::cmd::sync::run() == voke::result::SUCCESS
-  );
-
-  if (status_ok == false) {
-    voke::io::throw_unknown_command_or_arguments();
+  if (voke::app.commands_state == false) {
+    voke::argument::throw_unknown_command_or_arguments();
   }
 
   return voke::log::flush();

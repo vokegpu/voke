@@ -3,7 +3,8 @@
 #include "io/log.hpp"
 #include "platform/git.hpp"
 #include "platform/os.hpp"
-#include "io/resource.hpp"
+#include "resource/compiler.hpp"
+#include "resource/library.hpp"
 #include <iostream>
 
 voke::flags_t voke::cmd::sync::assert() {
@@ -12,7 +13,7 @@ voke::flags_t voke::cmd::sync::assert() {
   }
 
   std::vector<voke::argument_t> args {
-    voke::io::args_find_all(
+    voke::argument::find(
       voke::cmd::sync::alias
     )
   };
@@ -20,7 +21,7 @@ voke::flags_t voke::cmd::sync::assert() {
   if (
     args.empty()
     ||
-    voke::io::args_contains_any_non(
+    voke::argument::only(
       voke::cmd::sync::alias
     ) == voke::result::SUCCESS
   ) {
@@ -43,23 +44,23 @@ voke::flags_t voke::cmd::sync::assert() {
     return voke::result::ERROR_FAILED;
   }
 
-  args = voke::io::args_find_all({"-s", "--sync"});
+  args = voke::argument::find({"-s", "--sync"});
   if (args.size() == 1) {
     if (args.at(0).values.size() != 1) {
       return voke::result::ERROR_FAILED;
     }
 
-    args = voke::io::args_find_all({"-v", "--version"});
+    args = voke::argument::find({"-v", "--version"});
     if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
       return voke::result::ERROR_FAILED;
     }
 
-    args = voke::io::args_find_all({"-b", "--binary"});
+    args = voke::argument::find({"-b", "--binary"});
     if (!args.empty() && (args.size() != 1 || !args.at(0).values.empty())) {
       return voke::result::ERROR_FAILED;
     }
 
-    args = voke::io::args_find_all({"-c", "--compilers"});
+    args = voke::argument::find({"-c", "--compilers"});
     if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
       return voke::result::ERROR_FAILED;
     }
@@ -67,7 +68,7 @@ voke::flags_t voke::cmd::sync::assert() {
     return voke::result::SUCCESS;
   }
 
-  args = voke::io::args_find_all({"-sal", "--sync-all-libraries"});
+  args = voke::argument::find({"-sal", "--sync-all-libraries"});
   if (args.size() == 1) {
     if (!args.at(0).values.empty()) {
       return voke::result::ERROR_FAILED;
@@ -76,7 +77,7 @@ voke::flags_t voke::cmd::sync::assert() {
     return voke::result::SUCCESS;
   }
 
-  args = voke::io::args_find_all({"-sac", "--sync-all-compilers"});
+  args = voke::argument::find({"-sac", "--sync-all-compilers"});
   if (args.size() == 1) {
     if (!args.at(0).values.empty()) {
       return voke::result::ERROR_FAILED;
@@ -109,7 +110,7 @@ voke::flags_t voke::cmd::sync::run() {
   voke::platform::voke_system_fetch_installed_libraries();
 
   std::string arg_builder {};
-  std::vector<voke::argument_t> args {voke::io::args_find_all({"-s", "--sync"})};
+  std::vector<voke::argument_t> args {voke::argument::find({"-s", "--sync"})};
   if (args.size() == 1 && args.at(0).values.size() == 1 && args.at(0).values.at(0).size() > 3) {
     voke::argument_t arg {
       args.at(0)
@@ -150,12 +151,12 @@ voke::flags_t voke::cmd::sync::run() {
         library.voke_tag
       );
 
-      args = voke::io::args_find_all({"-v", "--version"});
+      args = voke::argument::find({"-v", "--version"});
       if (args.size() == 1) {
 
       }
 
-      args = voke::io::args_find_all({"-b", "--binary"});
+      args = voke::argument::find({"-b", "--binary"});
       if (args.size() == 1) {
         
       }

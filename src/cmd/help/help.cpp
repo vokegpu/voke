@@ -8,7 +8,7 @@ voke::flags_t voke::cmd::help::assert() {
   }
 
   std::vector<voke::argument_t> args {
-    voke::io::args_find_all(
+    voke::argument::find(
       voke::cmd::help::alias
     )
   };
@@ -20,7 +20,7 @@ voke::flags_t voke::cmd::help::assert() {
   if (
     args.empty()
     ||
-    voke::io::args_contains_any_non(
+    voke::argument::only(
       voke::cmd::help::alias
     ) == voke::result::SUCCESS
   ) {

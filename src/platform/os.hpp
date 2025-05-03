@@ -1,9 +1,9 @@
 #ifndef VOKE_PLATFORM_OS_HPP
 #define VOKE_PLATFORM_OS_HPP
 
+#include "resource/compiler.hpp"
+#include "resource/library.hpp"
 #include "io/memory.hpp"
-#include "io/resource.hpp"
-#include "voke.hpp"
 
 #include <sstream>
 #include <string>
