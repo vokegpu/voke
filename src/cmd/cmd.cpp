@@ -1,7 +1,8 @@
 #include "cmd.hpp"
+#include "voke.hpp"
 
 void voke::cmd::add(
-  voke::command_t assert
+  voke::command_t assert,
   voke::command_t run
 ) {
   voke::app.commands_state = (

@@ -1,7 +1,8 @@
 #ifndef VOKE_RESOURCE_COMPILER_HPP
 #define VOKE_RESOURCE_COMPILER_HPP
 
-#include "memory.hpp"
+#include "io/memory.hpp"
+#include "argument/argument.hpp"
 
 #include <string>
 #include <fstream>

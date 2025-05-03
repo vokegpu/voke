@@ -3,43 +3,22 @@
 #include "io/log.hpp"
 
 voke::flags_t voke::cmd::help::assert() {
-  if (voke::app.args.empty()) {
-    return voke::result::SUCCESS_PASS;
+  if (voke::app.raw_args.empty()) {
+    return voke::result::SUCCESS;
   }
 
-  std::vector<voke::argument_t> args {
-    voke::argument::find(
-      voke::cmd::help::alias
-    )
+  voke::argument_compiler_info_t compiler {
+    .tag = "help",
+    .lines = voke::app.raw_args,
+    .expect = {
+      {{"-h", "--help"}, 1, voke::must}
+    }
   };
 
-  if (args.empty()) {
-    return voke::result::ERROR_FAILED;
-  }
-
-  if (
-    args.empty()
-    ||
-    voke::argument::only(
-      voke::cmd::help::alias
-    ) == voke::result::SUCCESS
-  ) {
-    return voke::result::ERROR_FAILED;
-  }
-
-  if (
-      !args.at(0).values.empty()
-      ||
-      (
-        voke::app.args.at(0).prefix != "-h"
-        &&
-        voke::app.args.at(0).prefix != "--help"
-      )
-    ) {
-    return voke::result::ERROR_FAILED;
-  }
-
-  return voke::result::SUCCESS;
+  return voke::argument::compile(
+    compiler,
+    voke::app.args
+  );
 }
 
 voke::flags_t voke::cmd::help::run() {

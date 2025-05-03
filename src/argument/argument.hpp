@@ -1,7 +1,7 @@
 #ifndef VOKE_ARGUMENT_HPP
 #define VOKE_ARGUMENT_HPP
 
-#include "memory.hpp"
+#include "io/memory.hpp"
 
 #include <cstdint>
 #include <string>
@@ -10,13 +10,19 @@
 
 namespace voke {
   constexpr static size_t any {666};
+  constexpr static size_t empty {0};
   constexpr static size_t not_empty {720};
+
+  constexpr static bool must {true};
+  constexpr static bool should {false};
+
 
   struct assembly_t {
   public:
     std::vector<std::string> prefixes {};
     size_t size {};
     bool must {};
+    bool was_found {};
   };
 
   struct argument_compiler_info_t {
@@ -29,6 +35,7 @@ namespace voke {
   struct argument_parser_info_t {
   public:
     std::vector<std::string> args {};
+    bool serialize_quote {};
   };
 
   struct argument_t {
@@ -41,13 +48,13 @@ namespace voke {
 }
 
 namespace voke::argument {
-  voke::flags_t parser(
+  voke::flags_t parse(
     voke::argument_parser_info_t &parser_info,
-    std::vector<voke::argument> &argument_list
+    std::vector<voke::argument_t> &argument_list
   );
 
   voke::flags_t compile(
-    voke::argument_compile_info_t &compile_info,
+    voke::argument_compiler_info_t &compile_info,
     std::vector<voke::argument_t> &argument_list
   );
 

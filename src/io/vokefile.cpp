@@ -1,14 +1,17 @@
 #include "vokefile.hpp"
 
-voke::flags_t voke::io::voekfile_read_lines(
+#include <fstream>
+
+voke::flags_t voke::io::vokefile_read_lines(
   std::string path,
   std::vector<std::string> &lines
 ) {
   voke::flags_t result {voke::result::ERROR_FAILED};
-  std::ifstream file(parser_info.path);
+  std::ifstream file(path);
 
   if (file.is_open()) {
     result = voke::result::SUCCESS;
+    std::string line {};
     while (getline(file, line)) {
       if (line.empty()) {
         continue;
@@ -20,5 +23,5 @@ voke::flags_t voke::io::voekfile_read_lines(
     file.close();
   }
 
-  return lines;
+  return result;
 }

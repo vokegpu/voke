@@ -1,6 +1,8 @@
 #ifndef VOKE_IO_SHELL_HPP
 #define VOKE_IO_SHELL_HPP
 
+#include "memory.hpp"
+
 #include <sstream>
 #include <string>
 

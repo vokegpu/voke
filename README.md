@@ -34,8 +34,8 @@ use:
   voke | -r *                  remove a C/C++ library or a compiler from the system
        | --remove *
 
-  voke | -sac                  sync all C/C++ compilers-installed in voke-system 
-       | --sync-all-compilers
+  voke | -sat                  sync all C/C++ compilers-installed in voke-system 
+       | --sync-all-targets
        | -sal                  sync all C/C++ libraries-installed in voke-system 
        | --sync-all-libraries
 

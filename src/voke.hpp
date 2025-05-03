@@ -9,11 +9,6 @@
 #include <vector>
 
 namespace voke {
-  enum verbose_level {
-    LEVEL_ONE,
-    LEVEL_TWO
-  };
-
   extern struct app_t {
   public:
     std::string version {"0.1.0"};

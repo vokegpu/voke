@@ -1,5 +1,6 @@
 #include "git.hpp"
 #include "io/log.hpp"
+#include "io/shell.hpp"
 #include "platform/os.hpp"
 
 #include <iostream>

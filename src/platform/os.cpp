@@ -1,5 +1,6 @@
 #include "os.hpp"
 #include "io/log.hpp"
+#include "io/shell.hpp"
 #include "voke.hpp"
 #include "io/vokefile.hpp"
 
@@ -11,30 +12,33 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   voke::flags_t result {voke::result::SUCCESS};
 
   std::vector<std::string> lines {};
-  voke::io::voekfile_read_lines(voke::platform::voke_system_installed_compilers_path, lines);
+  voke::io::vokefile_read_lines(voke::platform::voke_system_installed_compilers_path, lines);
 
-  voke::vokefile_parser_info_t parser_info {
+  voke::argument_compiler_info_t compiler_info {
     .tag = "installed-compilers.voke",
     .lines = lines, 
     .expect = {
-      {{"--tag"}, 1, true},
-      {{"--binary-dir"}, 1, true},
-      {{"--lib-dir"}, 1, true},
-      {{"--include-dir"}, 1, true},
-      {{"--c"}, 1, true},
-      {{"--cpp"}, 1, true},
-      {{"--version"}, 1, true},
+      {{"--tag"}, 1, voke::must},
+      {{"--binary-dir"}, 1, voke::must},
+      {{"--lib-dir"}, 1, voke::must},
+      {{"--include-dir"}, 1, voke::must},
+      {{"--c"}, 1, voke::must},
+      {{"--cpp"}, 1, voke::must},
+      {{"--version"}, 1, voke::must},
     }
   };
 
   std::vector<voke::argument_t> args {};
-  voke::vokefile_parser_to_args(
-    parser_info,
-    args
-  );
+  if (
+      voke::argument::compile(
+      compiler_info,
+      args
+    ) != voke::result::SUCCESS
+  ) {
+    return voke::result::ERROR_FAILED;
+  }
 
   voke::compiler_t compiler {};
-  std::vector<voke::argument_t> compiler_args(1);
   size_t line {1};
 
   for (voke::argument_t &argument : args) {
@@ -43,27 +47,24 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
         voke::app.installed_compilers.push_back(compiler);
         voke::log() << "detail: " << compiler.tag << ' ' << compiler.version;
       } else {
-        voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << compiler.line;
+        voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << argument.line;
       }
 
       compiler = {};
       line = argument.line;
     }
 
-    compiler_args.at(0) = argument;
-    compiler.error_counter += voke::resource::serialize_compiler_from_argument_list(
-      compiler_args.at(0),
+    compiler.error_counter += voke::resource::serialize_compiler_from_argument(
+      argument,
       compiler
     );
   }
 
-  if (!args.empty()) {
-    if (compiler.error_counter == 0) {
-      voke::app.installed_compilers.push_back(compiler);
-      voke::log() << "detail: " << compiler.tag << ' ' << compiler.version;
-    } else {
-      voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << compiler.line;
-    }
+  if (compiler.error_counter == 0) {
+    voke::app.installed_compilers.push_back(compiler);
+    voke::log() << "detail: " << compiler.tag << ' ' << compiler.version;
+  } else {
+    voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << line;
   }
 
   return result;
@@ -74,27 +75,31 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   voke::flags_t result {voke::result::SUCCESS};
 
   std::vector<std::string> lines {};
-  voke::io::voekfile_read_lines(voke::platform::voke_system_installed_libraries_path, lines);
+  voke::io::vokefile_read_lines(voke::platform::voke_system_installed_libraries_path, lines);
 
-  voke::vokefile_parser_info_t parser_info {
+  voke::argument_compiler_info_t compiler_info {
     .tag = "installed-libraries.voke",
     .lines = lines,
     .expect = {
-      {{"--tag"}, voke::not_empty, true},
-      {{"--headers"}, voke::any, false},
-      {{"--headers-dir"}, voke::any, false},
-      {{"--libraries"}, voke::any, false},
-      {{"--libraries-dir"}, voke::any, false},
-      {{"--targets"}, voke::not_empty, true},
-      {{"--version"}, 1, true},
+      {{"--tag"}, voke::not_empty, voke::must},
+      {{"--headers"}, voke::any, voke::should},
+      {{"--headers-dir"}, voke::any, voke::should},
+      {{"--libraries"}, voke::any, voke::should},
+      {{"--libraries-dir"}, voke::any, voke::should},
+      {{"--targets"}, voke::not_empty, voke::must},
+      {{"--version"}, 1, voke::must},
     }
   };
 
   std::vector<voke::argument_t> args {};
-  voke::vokefile_parser_to_args(
-    parser_info,
-    args
-  );
+  if (
+      voke::argument::compile(
+      compiler_info,
+      args
+    ) != voke::result::SUCCESS
+  ) {
+    return voke::result::ERROR_FAILED;
+  }
 
   voke::library_t library {};
   size_t line {};
@@ -105,7 +110,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
         voke::app.installed_libraries.push_back(library);
         voke::log() << "detail: " << library.tag << ' ' << library.version;
       } else {
-        voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << compiler.line;
+        voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << argument.line;
       }
 
       voke::app.installed_libraries.push_back(library);
@@ -119,13 +124,11 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     );
   }
 
-  if (!args.empty()) {
-    if (library.error_counter == 0) {
-      voke::app.installed_compilers.push_back(library);
-      voke::log() << "detail: " << library.tag << ' ' << library.version;
-    } else {
-      voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << compiler.line;
-    }
+  if (library.error_counter == 0) {
+    voke::app.installed_libraries.push_back(library);
+    voke::log() << "detail: " << library.tag << ' ' << library.version;
+  } else {
+    voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << line;
   }
 
   return result;
@@ -137,58 +140,50 @@ voke::flags_t voke::platform::voke_system_fetch_sync_library_target(
   voke::flags_t result {voke::result::SUCCESS};
   
   std::vector<std::string> lines {};
-  voke::io::voekfile_read_lines(library.voke_path, lines);
+  voke::io::vokefile_read_lines(library.voke_path, lines);
 
-  voke::vokefile_parser_info_t parser_info {
+  voke::argument_compiler_info_t compiler_info {
     .tag = library.voke_tag,
     .lines = lines, 
     .expect = {
-      {{"--tag"}, voke::not_empty, true},
-      {{"--url"}, voke::not_empty, true},
-      {{"--git-clone-args"}, voke::not_empty, false},
-      {{"--build-system"}, voke::not_empty, true},
-      {{"--targets"}, voke::not_empty, true},
-      {{"--headers"}, voke::not_empty, true},
-      {{"--include-dirs"}, voke::not_empty, true},
+      {{"--tag"}, voke::not_empty, voke::must},
+      {{"--url"}, voke::not_empty, voke::must},
+      {{"--git-clone-args"}, voke::not_empty, voke::should},
+      {{"--build-system"}, voke::not_empty, voke::must},
+      {{"--targets"}, voke::not_empty, voke::must},
+      {{"--headers"}, voke::not_empty, voke::must},
+      {{"--include-dirs"}, voke::not_empty, voke::must},
     }
   };
   
   std::vector<voke::argument_t> args {};
-  voke::vokefile_parser_to_args(
-    parser_info,
-    args
-  );
+  if (
+      voke::argument::compile(
+      compiler_info,
+      args
+    ) != voke::result::SUCCESS
+  ) {
+    return voke::result::ERROR_FAILED;
+  }
 
-  voke::library_t library {};
+  if (args.empty()) {
+    result = voke::result::ERROR_FAILED;
+    return result;
+  }
+
   size_t line {};
-
   for (voke::argument_t &argument : args) {
-    if (argument.line != line) {
-      if (library.error_counter == 0) {
-        voke::app.installed_libraries.push_back(library);
-        voke::log() << "detail: " << library.tag << ' ' << library.version;
-      } else {
-        voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << compiler.line;
-      }
-
-      voke::app.installed_libraries.push_back(library);
-      library = {};
-      line = argument.line;
-    }
-
     library.error_counter += voke::resource::serialize_library_from_argument(
       argument,
       library
     );
   }
 
-  if (!args.empty()) {
-    if (library.error_counter == 0) {
-      voke::app.installed_compilers.push_back(library);
-      voke::log() << "detail: " << library.tag << ' ' << library.version;
-    } else {
-      voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << compiler.line;
-    }
+  if (library.error_counter == 0) {
+    voke::app.libraries.push_back(library);
+    voke::log() << "detail: " << library.tag << ' ' << library.version;
+  } else {
+    voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << '\'';
   }
 
   return result;
@@ -227,14 +222,14 @@ voke::flags_t voke::platform::compile_libraries(
 ) {
   voke::result result {};
   for (voke::library_t &library : voke::app.libraries) {
-    if (library.target.empty()) {
+    if (library.targets.empty()) {
       voke::log() << "warning: skipping library voke-file '" << library.voke_path << "', no C/C++ compiler target specified";
       continue;
     }
 
     result = voke::result::SUCCESS_PASS;
     for (voke::compiler_t &compiler : voke::app.installed_compilers) {
-      for (std::string &target : library.target) {
+      for (std::string &target : library.targets) {
         if (target == compiler.tag) {
           result = voke::result::SUCCESS;
           break;

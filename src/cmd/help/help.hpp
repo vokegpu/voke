@@ -6,10 +6,6 @@
 #include <string>
 
 namespace voke::cmd::help {
-  const static std::vector<std::string> alias {
-    "--help", "-h"
-  }; 
-
   voke::flags_t assert();
   voke::flags_t run();
 }

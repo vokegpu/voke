@@ -1,4 +1,5 @@
 #include "compiler.hpp"
+#include "io/log.hpp"
 
 voke::flags_t voke::resource::serialize_compiler_from_argument(
   voke::argument_t &argument,

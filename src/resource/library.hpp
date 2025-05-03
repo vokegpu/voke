@@ -1,7 +1,8 @@
 #ifndef VOKE_RESOURCE_LIBRARY_HPP
 #define VOKE_RESOURCE_LIBRARY_HPP
 
-#include "memory.hpp"
+#include "io/memory.hpp"
+#include "argument/argument.hpp"
 
 #include <vector>
 #include <string>

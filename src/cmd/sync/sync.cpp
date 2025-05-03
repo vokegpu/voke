@@ -1,6 +1,7 @@
 #include "sync.hpp"
 #include "voke.hpp"
 #include "io/log.hpp"
+#include "io/shell.hpp"
 #include "platform/git.hpp"
 #include "platform/os.hpp"
 #include "resource/compiler.hpp"
@@ -8,85 +9,65 @@
 #include <iostream>
 
 voke::flags_t voke::cmd::sync::assert() {
-  if (voke::app.args.empty()) {
+  if (voke::app.raw_args.empty()) {
     return voke::result::SUCCESS_PASS;
   }
 
-  std::vector<voke::argument_t> args {
-    voke::argument::find(
-      voke::cmd::sync::alias
-    )
+  voke::argument_compiler_info_t compiler_info {
+    .tag = "sync",
+    .lines = voke::app.raw_args,
+    .expect = {
+      {{"-s", "--sync"}, 1, voke::must},
+      {{"-v", "--version"}, 1, voke::should},
+      {{"-b", "--binary"}, voke::empty, voke::should},
+      {{"-t", "--targets"}, voke::empty, voke::should},
+    }
   };
 
   if (
-    args.empty()
-    ||
-    voke::argument::only(
-      voke::cmd::sync::alias
+    voke::argument::compile(
+      compiler_info,
+      voke::app.args
     ) == voke::result::SUCCESS
   ) {
-    return voke::result::ERROR_FAILED;
+    return voke::result::SUCCESS;
   }
+
+  compiler_info = {
+    .tag = "sync-all-targets",
+    .lines = voke::app.raw_args,
+    .expect = {
+      {{"-sat", "--sync-all-targets"}, voke::empty, voke::must}
+    }
+  };
 
   if (
-    args.at(0).prefix != "-s"
-    &&
-    args.at(0).prefix != "--sync"
-    &&
-    args.at(0).prefix != "--sac"
-    &&
-    args.at(0).prefix != "--sync-all-compilers"
-    &&
-    args.at(0).prefix != "-sal"
-    &&
-    args.at(0).prefix != "--sync-all-libraries"
+    voke::argument::compile(
+      compiler_info,
+      voke::app.args
+    ) == voke::result::SUCCESS
   ) {
-    return voke::result::ERROR_FAILED;
-  }
-
-  args = voke::argument::find({"-s", "--sync"});
-  if (args.size() == 1) {
-    if (args.at(0).values.size() != 1) {
-      return voke::result::ERROR_FAILED;
-    }
-
-    args = voke::argument::find({"-v", "--version"});
-    if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
-      return voke::result::ERROR_FAILED;
-    }
-
-    args = voke::argument::find({"-b", "--binary"});
-    if (!args.empty() && (args.size() != 1 || !args.at(0).values.empty())) {
-      return voke::result::ERROR_FAILED;
-    }
-
-    args = voke::argument::find({"-c", "--compilers"});
-    if (!args.empty() && (args.size() != 1 || args.at(0).values.empty())) {
-      return voke::result::ERROR_FAILED;
-    }
-
     return voke::result::SUCCESS;
   }
 
-  args = voke::argument::find({"-sal", "--sync-all-libraries"});
-  if (args.size() == 1) {
-    if (!args.at(0).values.empty()) {
-      return voke::result::ERROR_FAILED;
+  compiler_info = {
+    .tag = "sync-all-libraries",
+    .lines = voke::app.raw_args,
+    .expect = {
+      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::must}
     }
+  };
 
+  if (
+    voke::argument::compile(
+      compiler_info,
+      voke::app.args
+    ) == voke::result::SUCCESS
+  ) {
     return voke::result::SUCCESS;
   }
 
-  args = voke::argument::find({"-sac", "--sync-all-compilers"});
-  if (args.size() == 1) {
-    if (!args.at(0).values.empty()) {
-      return voke::result::ERROR_FAILED;
-    }
-
-    return voke::result::SUCCESS;
-  }
-
-  return voke::result::ERROR_FAILED;
+  return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::cmd::sync::run() {

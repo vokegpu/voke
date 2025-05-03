@@ -1,11 +1,6 @@
 #include "io/log.hpp"
-#include "argument/argument.hpp"
-#include "io/memory.hpp"
+#include "cmd/cmd.hpp"
 #include "voke.hpp"
-
-#include "cmd/help/help.hpp"
-#include "cmd/version/version.hpp"
-#include "cmd/sync/sync.hpp"
 #include "platform/git.hpp"
 
 #include <iostream>
@@ -13,7 +8,7 @@
 voke::app_t voke::app {};
 
 int32_t main(int32_t args_size, char **pp_args) {
-  voke::app.raw_args(pp_args, pp_args + args_size);
+  voke::app.raw_args = {pp_args, pp_args + args_size};
 
   voke::cmd::add(
     voke::cmd::version::assert,

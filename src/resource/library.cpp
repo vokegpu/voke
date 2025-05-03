@@ -1,65 +1,66 @@
 #include "library.hpp"
+#include "io/log.hpp"
 
 voke::flags_t voke::resource::serialize_library_from_argument(
   voke::argument_t &argument,
   voke::library_t &library
 ) {
-  if (arg.prefix == "--tag") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+  if (argument.prefix == "--tag") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.tag = arg.values.at(0);
-  } else if (arg.prefix == "--version") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.tag = argument.values.at(0);
+  } else if (argument.prefix == "--version") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.version = arg.values.at(0);
-  } else if (arg.prefix == "--libs") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.version = argument.values.at(0);
+  } else if (argument.prefix == "--libs") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.libs = arg.values;
-  } else if (arg.prefix == "--includes") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.libs = argument.values;
+  } else if (argument.prefix == "--includes") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.includes = arg.values;
-  } else if (arg.prefix == "--compiler") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.includes = argument.values;
+  } else if (argument.prefix == "--compiler") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.compiler = arg.values.at(0);
-  } else if (arg.prefix == "--type") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.compiler = argument.values.at(0);
+  } else if (argument.prefix == "--type") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.type = arg.values.at(0);
-  } else if (arg.prefix == "--arch") {
-    if (arg.values.empty()) {
-      voke::log::error = arg.prefix;
+    library.type = argument.values.at(0);
+  } else if (argument.prefix == "--arch") {
+    if (argument.values.empty()) {
+      voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.arch = arg.values.at(0);
+    library.arch = argument.values.at(0);
   } else if (argument.prefix == "--target") {
     if (argument.values.empty()) {
       voke::log::error = argument.prefix;
       return voke::result::ERROR_FAILED;
     }
 
-    library.target = argument.values;
+    library.targets = argument.values;
   } else if (argument.prefix == "--build-system") {
     if (argument.values.empty()) {
       voke::log::error = argument.prefix;

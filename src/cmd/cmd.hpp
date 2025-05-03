@@ -11,7 +11,8 @@ namespace voke {
 
 namespace voke::cmd {
   void add(
-    voke::command_t command
+    voke::command_t command,
+    voke::command_t run
   );
 }
 

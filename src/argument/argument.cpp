@@ -1,8 +1,10 @@
 #include "argument.hpp"
+#include "voke.hpp"
+#include "io/log.hpp"
 
 voke::flags_t voke::argument::parse(
   voke::argument_parser_info_t &parser_info,
-  std::vector<voke::argument> &argument_list
+  std::vector<voke::argument_t> &argument_list
 ) {
   voke::flags_t result {voke::result::SUCCESS};
   std::vector<std::string> unserialized_args {};
@@ -16,7 +18,7 @@ voke::flags_t voke::argument::parse(
       continue;
     }
 
-    if (should_serialize_quote) {
+    if (parser_info.serialize_quote) {
       found_quote = (arg.front() == '\'' || arg.front() == '"');
       if (quoted.empty() && found_quote) {
         serialized_quote.clear();
@@ -61,7 +63,7 @@ voke::flags_t voke::argument::parse(
       &&
       !serialized_arg.prefix.empty()
     ) {
-      voke_args.push_back(serialized_arg);
+      argument_list.push_back(serialized_arg);
     }
 
     if (is_an_new_arg) {
@@ -88,7 +90,7 @@ voke::flags_t voke::argument::parse(
     }
 
     if (is_at_end && !serialized_arg.prefix.empty()) {
-      voke_args.push_back(serialized_arg);
+      argument_list.push_back(serialized_arg);
     }
   }
 
@@ -96,49 +98,44 @@ voke::flags_t voke::argument::parse(
 }
 
 voke::flags_t voke::argument::compile(
-  voke::argument_compile_info_t &compile_info,
+  voke::argument_compiler_info_t &compile_info,
   std::vector<voke::argument_t> &argument_list
 ) {
   voke::flags_t result {voke::result::SUCCESS};
   if (!compile_info.lines.empty()) {
-    size_t argument_list_size {}
+    size_t size {};
     size_t line_count {1};
 
     std::vector<voke::argument_t> parsed_args {};
-    voke::argument_parser_info_t parser_info {};
+    voke::argument_parser_info_t parser_info {.serialize_quote = true};
 
     bool must {};
-    bool contains {};
+    size_t contains {};
 
     for (std::string &line : compile_info.lines) {
       if (line.empty()) {
         continue;
       }
 
-      parser_info.args = voke::io::split(line, ' ');
+      parser_info.args = voke::io::split(line, " ");
       voke::argument::parse(parser_info, parsed_args);
 
-      argument_list_size = parsed_args.size();
-      for (size_t it {}; it < argument_list_size; it++) {
+      size = parsed_args.size();
+      for (size_t it {}; it < size; it++) {
         argument_t &argument {parsed_args.at(it)};
         argument.line = line_count;
 
-        must_but_not_found = true;
         for (voke::assembly_t &assembly : compile_info.expect) {
-          contains = false;
+          contains = 0;
           for (std::string &prefix : assembly.prefixes) {
-            if (
-                (contains = prefix == argument.prefix)
-              ) {
-              break;
-            }
+            contains += prefix == argument.prefix;
           }
 
-          if (!contains) {
+          if (contains != 1) {
             continue;
           }
 
-          must_but_not_found = false;
+          assembly.was_found = true;
 
           switch (assembly.size) {
           case voke::any:
@@ -150,9 +147,10 @@ voke::flags_t voke::argument::compile(
               break;
             }
 
+            result = voke::result::ERROR_FAILED;
             voke::log()
               << "error: '" << compile_info.tag << "' line at:\n "
-              << line_count << " | " << line;
+              << line_count << " | " << line
               << " \t at column (" << (it+1) << "): '" << argument.prefix << "' invalid argument size, empty, expected arguments"; 
             break;
           default:
@@ -161,21 +159,39 @@ voke::flags_t voke::argument::compile(
               break;
             }
 
+            result = voke::result::ERROR_FAILED;
             voke::log()
               << "error: '" << compile_info.tag << "' line at:\n "
-              << line_count << " | " << line;
+              << line_count << " | " << line
               << " \t at column (" << (it+1) << "): '" << argument.prefix << "' invalid argument size '" << argument.values.size() << "' expected '" << assembly.size << '\''; 
             break;
           }
         }
-
-        if (must_but_not_found) {
-          voke::log() 
-            << "error: '" << compile_info.tag << "' expected argument '" << argument.prefix << '\'';
-        }
       }
 
       line_count++;
+    }
+
+    std::string prefixes {};
+    for (voke::assembly_t &assembly : compile_info.expect) {
+      if (assembly.must && assembly.was_found) {
+        continue;
+      }
+
+      prefixes.clear();
+      size = assembly.prefixes.size();
+
+      for (size_t it {}; it < size; it++) {
+        prefixes += assembly.prefixes.at(it);
+
+        if (it < size - 1) {
+          prefixes += " | ";
+        }
+      }
+
+      voke::log() 
+        << "error: '" << compile_info.tag << "' expected argument '" << prefixes << '\'';
+      result = voke::result::ERROR_FAILED;
     }
   }
 
@@ -210,11 +226,11 @@ voke::flags_t voke::argument::only(
     }
 
     if (!contains_any) {
-      return voke::result::SUCCESS;
+      return voke::result::ERROR_FAILED;
     }
   }
 
-  return voke::result::ERROR_TIMEOUT;
+  return voke::result::SUCCESS;
 }
 
 std::vector<voke::argument_t> voke::argument::find(
