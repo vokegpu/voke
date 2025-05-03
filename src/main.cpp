@@ -20,20 +20,20 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::app.raw_args.clear();
   voke::app.raw_args.emplace_back() = raw;
 
-  //voke::cmd::add(
-  //  voke::cmd::version::assert,
-  //  voke::cmd::version::run
-  //);
+  voke::cmd::add(
+    voke::cmd::version::assert,
+    voke::cmd::version::run
+  );
 
   voke::cmd::add(
     voke::cmd::sync::assert,
     voke::cmd::sync::run
   );
 
-  //voke::cmd::add(
-  //  voke::cmd::help::assert,
-  //  voke::cmd::help::run
-  //);
+  voke::cmd::add(
+    voke::cmd::help::assert,
+    voke::cmd::help::run
+  );
 
   if (voke::app.commands_state == false) {
     voke::argument::throw_unknown_command_or_arguments();
