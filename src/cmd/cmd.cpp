@@ -1,6 +1,7 @@
 #include "cmd.hpp"
 #include "voke.hpp"
 #include "io/shell.hpp"
+#include "io/log.hpp"
 
 void voke::cmd::add(
   voke::command_t assert,
@@ -14,10 +15,13 @@ void voke::cmd::add(
       &&
       (
         (
-          voke::shell::verbose_level = voke::argument::find({"-el", "--extra-logs"}
-        ).size()
-        ==
-        1 ? voke::verbose_level::LEVEL_TWO : voke::verbose_level::LEVEL_ONE) || true)
+          voke::shell::verbose_level = voke::argument::find({"-el", "--extra-logs"}).size()
+          ==
+          1 ? voke::verbose_level::LEVEL_TWO : voke::verbose_level::LEVEL_ONE
+        )
+        ||
+        true
+      )
       &&
       run() == voke::result::SUCCESS
     )

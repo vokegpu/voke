@@ -15,6 +15,7 @@ namespace voke {
     size_t size {};
     bool must {};
     size_t was_found {};
+    bool was_compiled {};
   };
 
   struct argument_compiler_info_t {

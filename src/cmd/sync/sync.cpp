@@ -22,6 +22,7 @@ voke::flags_t voke::cmd::sync::assert() {
       {{"-v", "--version"}, 1, voke::optional},
       {{"-b", "--binary"}, voke::empty, voke::optional},
       {{"-t", "--targets"}, voke::empty, voke::optional},
+      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
     }
   };
 
@@ -39,7 +40,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-sat", "--sync-all-targets"}, voke::empty, voke::mandatory}
+      {{"-sat", "--sync-all-targets"}, voke::empty, voke::mandatory},
+      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
     }
   };
 
@@ -57,7 +59,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::mandatory}
+      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::mandatory},
+      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
     }
   };
 
@@ -70,7 +73,7 @@ voke::flags_t voke::cmd::sync::assert() {
     return voke::result::SUCCESS;
   }
 
-  return voke::result::SUCCESS;
+  return voke::result::SUCCESS_PASS;
 }
 
 voke::flags_t voke::cmd::sync::run() {
