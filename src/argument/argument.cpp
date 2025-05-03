@@ -165,8 +165,6 @@ voke::flags_t voke::argument::compile(
             break;
           default:
             if (argument.values.size() == assembly.size) {
-          voke::log() << argument.values.size();
-
               argument_list.push_back(argument);
               break;
             }
