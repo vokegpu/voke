@@ -10,8 +10,9 @@ voke::flags_t voke::cmd::version::assert() {
   voke::argument_compiler_info_t compiler_info {
     .tag = "version",
     .lines = voke::app.raw_args,
+    .match_first = true,
     .expect = {
-      {{"-v", "--version"}, 0, voke::must}
+      {{"-v", "--version"}, voke::empty, voke::mandatory}
     }
   };
 

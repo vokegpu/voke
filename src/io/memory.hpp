@@ -10,6 +10,13 @@ namespace voke {
   typedef uint32_t id_t;
   typedef int32_t shell_result_t;
 
+  constexpr static size_t any {666};
+  constexpr static size_t empty {0};
+  constexpr static size_t not_empty {720};
+
+  constexpr static bool mandatory {true};
+  constexpr static bool optional {false};
+
   enum result {
     SUCCESS                  = 0,
     SUCCESS_PASS             = 1,

@@ -16,11 +16,12 @@ voke::flags_t voke::cmd::sync::assert() {
   voke::argument_compiler_info_t compiler_info {
     .tag = "sync",
     .lines = voke::app.raw_args,
+    .match_first = true,
     .expect = {
-      {{"-s", "--sync"}, 1, voke::must},
-      {{"-v", "--version"}, 1, voke::should},
-      {{"-b", "--binary"}, voke::empty, voke::should},
-      {{"-t", "--targets"}, voke::empty, voke::should},
+      {{"-s", "--sync"}, 1, voke::mandatory},
+      {{"-v", "--version"}, 1, voke::optional},
+      {{"-b", "--binary"}, voke::empty, voke::optional},
+      {{"-t", "--targets"}, voke::empty, voke::optional},
     }
   };
 
@@ -36,8 +37,9 @@ voke::flags_t voke::cmd::sync::assert() {
   compiler_info = {
     .tag = "sync-all-targets",
     .lines = voke::app.raw_args,
+    .match_first = true,
     .expect = {
-      {{"-sat", "--sync-all-targets"}, voke::empty, voke::must}
+      {{"-sat", "--sync-all-targets"}, voke::empty, voke::mandatory}
     }
   };
 
@@ -53,8 +55,9 @@ voke::flags_t voke::cmd::sync::assert() {
   compiler_info = {
     .tag = "sync-all-libraries",
     .lines = voke::app.raw_args,
+    .match_first = true,
     .expect = {
-      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::must}
+      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::mandatory}
     }
   };
 

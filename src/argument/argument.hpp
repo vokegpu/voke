@@ -9,26 +9,19 @@
 #include <vector>
 
 namespace voke {
-  constexpr static size_t any {666};
-  constexpr static size_t empty {0};
-  constexpr static size_t not_empty {720};
-
-  constexpr static bool must {true};
-  constexpr static bool should {false};
-
-
   struct assembly_t {
   public:
     std::vector<std::string> prefixes {};
     size_t size {};
     bool must {};
-    bool was_found {};
+    size_t was_found {};
   };
 
   struct argument_compiler_info_t {
   public:
     std::string_view tag {};
     std::vector<std::string> lines {};
+    bool match_first {};
     std::vector<assembly_t> expect {};
   };
 

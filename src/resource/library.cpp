@@ -126,6 +126,8 @@ voke::flags_t voke::resource::serialize_library_from_argument(
 
     library.run = argument.values.at(0);
   }
+
+  return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::resource::serialize_library_from_argument_list(

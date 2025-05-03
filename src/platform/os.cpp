@@ -18,13 +18,13 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     .tag = "installed-compilers.voke",
     .lines = lines, 
     .expect = {
-      {{"--tag"}, 1, voke::must},
-      {{"--binary-dir"}, 1, voke::must},
-      {{"--lib-dir"}, 1, voke::must},
-      {{"--include-dir"}, 1, voke::must},
-      {{"--c"}, 1, voke::must},
-      {{"--cpp"}, 1, voke::must},
-      {{"--version"}, 1, voke::must},
+      {{"--tag"}, 1, voke::mandatory},
+      {{"--binary-dir"}, 1, voke::mandatory},
+      {{"--lib-dir"}, 1, voke::mandatory},
+      {{"--include-dir"}, 1, voke::mandatory},
+      {{"--c"}, 1, voke::mandatory},
+      {{"--cpp"}, 1, voke::mandatory},
+      {{"--version"}, 1, voke::mandatory},
     }
   };
 
@@ -81,13 +81,13 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     .tag = "installed-libraries.voke",
     .lines = lines,
     .expect = {
-      {{"--tag"}, voke::not_empty, voke::must},
-      {{"--headers"}, voke::any, voke::should},
-      {{"--headers-dir"}, voke::any, voke::should},
-      {{"--libraries"}, voke::any, voke::should},
-      {{"--libraries-dir"}, voke::any, voke::should},
-      {{"--targets"}, voke::not_empty, voke::must},
-      {{"--version"}, 1, voke::must},
+      {{"--tag"}, voke::not_empty, voke::mandatory},
+      {{"--headers"}, voke::any, voke::optional},
+      {{"--headers-dir"}, voke::any, voke::optional},
+      {{"--libraries"}, voke::any, voke::optional},
+      {{"--libraries-dir"}, voke::any, voke::optional},
+      {{"--targets"}, voke::not_empty, voke::mandatory},
+      {{"--version"}, 1, voke::mandatory},
     }
   };
 
@@ -146,13 +146,13 @@ voke::flags_t voke::platform::voke_system_fetch_sync_library_target(
     .tag = library.voke_tag,
     .lines = lines, 
     .expect = {
-      {{"--tag"}, voke::not_empty, voke::must},
-      {{"--url"}, voke::not_empty, voke::must},
-      {{"--git-clone-args"}, voke::not_empty, voke::should},
-      {{"--build-system"}, voke::not_empty, voke::must},
-      {{"--targets"}, voke::not_empty, voke::must},
-      {{"--headers"}, voke::not_empty, voke::must},
-      {{"--include-dirs"}, voke::not_empty, voke::must},
+      {{"--tag"}, voke::not_empty, voke::mandatory},
+      {{"--url"}, voke::not_empty, voke::mandatory},
+      {{"--git-clone-args"}, voke::not_empty, voke::optional},
+      {{"--build-system"}, voke::not_empty, voke::mandatory},
+      {{"--targets"}, voke::not_empty, voke::mandatory},
+      {{"--headers"}, voke::not_empty, voke::mandatory},
+      {{"--include-dirs"}, voke::not_empty, voke::mandatory},
     }
   };
   

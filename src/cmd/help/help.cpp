@@ -10,8 +10,9 @@ voke::flags_t voke::cmd::help::assert() {
   voke::argument_compiler_info_t compiler {
     .tag = "help",
     .lines = voke::app.raw_args,
+    .match_first = true,
     .expect = {
-      {{"-h", "--help"}, 1, voke::must}
+      {{"-h", "--help"}, 1, voke::mandatory}
     }
   };
 
