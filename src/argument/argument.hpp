@@ -38,6 +38,14 @@ namespace voke {
     std::vector<std::string> values {};
     std::string raw {};
     size_t line {};
+  public:
+    operator std::string() {
+      if (values.empty()) {
+        return "";
+      }
+
+      return values.at(0);
+    }
   };
 }
 

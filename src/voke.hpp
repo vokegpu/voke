@@ -2,8 +2,7 @@
 #define VOKE_HPP
 
 #include "argument/argument.hpp"
-#include "resource/compiler.hpp"
-#include "resource/library.hpp"
+#include "resource/resource.hpp"
 
 #include <string>
 #include <vector>

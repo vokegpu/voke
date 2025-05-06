@@ -38,33 +38,57 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     return voke::result::ERROR_FAILED;
   }
 
-  voke::compiler_t compiler {};
   size_t line {1};
+  size_t size {args.size()};
 
-  for (voke::argument_t &argument : args) {
+  voke::compiler_t compiler {};
+  std::vector<voke::compiler_t> unchecked_compilers {};
+
+  for (size_t it {}; it < size; it++) {
+    voke::argument_t &argument {
+      args.at(it)
+    };
+
+    if (argument.prefix.empty()) {
+      continue;
+    }
+
     if (argument.line != line) {
-      if (compiler.error_counter == 0) {
-        voke::app.installed_compilers.push_back(compiler);
-        voke::log() << "detail: " << compiler.tag << ' ' << compiler.version;
-      } else {
-        voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << argument.line;
-      }
-
+      unchecked_compilers.push_back(compiler);
       compiler = {};
       line = argument.line;
     }
 
-    compiler.error_counter += voke::resource::serialize_compiler_from_argument(
-      argument,
-      compiler
-    );
+    compiler[argument.prefix] = argument;
+
+    if (it == size - 1) {
+      unchecked_compilers.push_back(compiler);
+    }
   }
 
-  if (compiler.error_counter == 0) {
-    voke::app.installed_compilers.push_back(compiler);
-    voke::log() << "detail: " << compiler.tag << ' ' << compiler.version;
-  } else {
-    voke::log() << "error: " << compiler.error_counter << " error(s) occured, failed to recognise compiler '" << compiler.tag << "' at line " << line;
+  std::vector<std::string> mandatory {
+    {"--tag"},
+    {"--binary-dir"},
+    {"--lib-dir"},
+    {"--include-dir"},
+    {"--c"},
+    {"--cpp"},
+    {"--version"}
+  };
+
+  size_t errors {};
+  for (voke::compiler_t &compiler : unchecked_compilers) {
+    errors = voke::resource::mandatory<voke::compiler_t>(
+      mandatory,
+      compiler
+    );
+
+    if (errors == 0) {
+      voke::app.installed_compilers.push_back(compiler);
+      voke::log() << "detail: " << compiler["tag"] << ' ' << compiler["version"];
+    } else {
+      voke::log() << "fatal: " << errors << " error(s) occured, failed to recognise compiler '" << compiler["tag"] << '\'';
+    }
   }
 
   return result;
@@ -101,34 +125,55 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     return voke::result::ERROR_FAILED;
   }
 
+  size_t line {1};
+  size_t size {args.size()};
+
   voke::library_t library {};
-  size_t line {};
+  std::vector<voke::library_t> unchecked_libraries {};
 
-  for (voke::argument_t &argument : args) {
+  for (size_t it {}; it < size; it++) {
+    voke::argument_t &argument {
+      args.at(it)
+    };
+
+    if (argument.prefix.empty()) {
+      continue;
+    }
+
     if (argument.line != line) {
-      if (library.error_counter == 0) {
-        voke::app.installed_libraries.push_back(library);
-        voke::log() << "detail: " << library.tag << ' ' << library.version;
-      } else {
-        voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << argument.line;
-      }
-
-      voke::app.installed_libraries.push_back(library);
+      unchecked_libraries.push_back(library);
       library = {};
       line = argument.line;
     }
 
-    library.error_counter += voke::resource::serialize_library_from_argument(
-      argument,
-      library
-    );
+    library[argument.prefix] = argument;
+
+    if (it == size - 1) {
+      unchecked_libraries.push_back(library);
+    }
   }
 
-  if (library.error_counter == 0) {
-    voke::app.installed_libraries.push_back(library);
-    voke::log() << "detail: " << library.tag << ' ' << library.version;
-  } else {
-    voke::log() << "error: " << library.error_counter << " error(s) occured, failed to recognise library '" << library.tag << "' at line " << line;
+  std::vector<std::string> mandatory {
+    {"--tag"},
+    {"--targets"},
+    {"--version"},
+    {"--binaries", "--binaries-dir"},
+    {"--headers", "--headers-dir"},
+  };
+
+  size_t errors {};
+  for (voke::library_t &library : unchecked_compilers) {
+    errors = voke::resource::mandatory<voke::library_t>(
+      mandatory,
+      library
+    );
+
+    if (errors == 0) {
+      voke::app.installed_compilers.push_back(library);
+      voke::log() << "detail: " << library["tag"] << ' ' << library["version"];
+    } else {
+      voke::log() << "fatal: " << errors << " error(s) occured, failed to recognise library '" << library["tag"] << '\'';
+    }
   }
 
   return result;
@@ -147,9 +192,9 @@ voke::flags_t voke::platform::voke_system_fetch_sync_library_target(
     .lines = lines, 
     .expect = {
       {{"--tag"}, voke::not_empty, voke::mandatory},
+      {{"--build-system"}, voke::not_empty, voke::mandatory},
       {{"--url"}, voke::not_empty, voke::mandatory},
       {{"--git-clone-args"}, voke::not_empty, voke::optional},
-      {{"--build-system"}, voke::not_empty, voke::mandatory},
       {{"--targets"}, voke::not_empty, voke::mandatory},
       {{"--headers"}, voke::not_empty, voke::mandatory},
       {{"--include-dirs"}, voke::not_empty, voke::mandatory},
@@ -230,7 +275,7 @@ voke::flags_t voke::platform::compile_libraries(
     result = voke::result::SUCCESS_PASS;
     for (voke::compiler_t &compiler : voke::app.installed_compilers) {
       for (std::string &target : library.targets) {
-        if (target == compiler.tag) {
+        if (target == compiler["tag"]) {
           result = voke::result::SUCCESS;
           break;
         }
@@ -239,7 +284,7 @@ voke::flags_t voke::platform::compile_libraries(
       if (result == voke::result::SUCCESS) {
         result = voke::result::SUCCESS_PASS;
 
-        voke::log() << "detail: building library '" << library.voke_tag << "' for C/C++ target '" << compiler.tag << "'...";
+        voke::log() << "detail: building library '" << library.voke_tag << "' for C/C++ target '" << compiler["tag"] << "'...";
         
         voke::io::replace(
           library.run,

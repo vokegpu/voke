@@ -4,8 +4,7 @@
 #include "io/shell.hpp"
 #include "platform/git.hpp"
 #include "platform/os.hpp"
-#include "resource/compiler.hpp"
-#include "resource/library.hpp"
+#include "resource/resource.hpp"
 #include <iostream>
 
 voke::flags_t voke::cmd::sync::assert() {
@@ -104,11 +103,11 @@ voke::flags_t voke::cmd::sync::run() {
     };
 
     bool is_library_type {
-      arg.values.at(0).at(0) == 'l' // meow
+      arg.values.at(0).at(0) == 'l'
       &&
-      arg.values.at(0).at(1) == 'i' // moo
+      arg.values.at(0).at(1) == 'i'
       &&
-      arg.values.at(0).at(2) == 'b' // wolfowlf
+      arg.values.at(0).at(2) == 'b'
     };
 
     if (
