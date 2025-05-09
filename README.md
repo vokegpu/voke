@@ -6,7 +6,7 @@ Independent lightweight cross-platform C/C++ library-manager.
 
 The plans for now is focus on Windows support, Linux is not the priority (but it works!).
 
-Welcome ><, [if you want to contribute check the coding guide-style here](https://github.com/vokegpu/code-of-conduct-and-style-guide), thanks.
+Welcome ><, if you want to contribute check the [Vokegpu standard](https://github.com/vokegpu/standard), thanks.
 
 All you need to compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
 ```sh
