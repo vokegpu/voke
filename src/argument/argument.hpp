@@ -9,11 +9,16 @@
 #include <vector>
 
 namespace voke {
+  enum behavior : uint8_t {
+    OPTIONAL = 2 << 1,
+    MANDATORY = 2 << 2
+  };
+
   struct assembly_t {
   public:
     std::vector<std::string> prefixes {};
     size_t size {};
-    bool must {};
+    voke::flags_t behavior {};
     size_t was_found {};
     bool was_compiled {};
   };
@@ -40,11 +45,27 @@ namespace voke {
     size_t line {};
   public:
     operator std::string() {
-      if (values.empty()) {
+      if (this->values.empty()) {
         return "";
       }
 
-      return values.at(0);
+      return this->values.at(0);
+    }
+
+    operator = (const std::string &value) {
+      if (this->values.empty()) {
+        this->values.emplace_back();
+      }
+
+      this->values.at(0) = value;
+    }
+
+    operator = (const char *p_value) {
+      if (this->values.empty()) {
+        this->values.emplace_back();
+      }
+
+      this->values.at(0) = std::string(p_value);
     }
   };
 }

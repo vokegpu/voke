@@ -12,7 +12,7 @@ voke::flags_t voke::cmd::version::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-v", "--version"}, voke::empty, voke::mandatory}
+      {{"-v", "--version"}, voke::empty, voke::behavior::MANDATORY}
     }
   };
 

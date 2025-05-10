@@ -226,9 +226,11 @@ voke::flags_t voke::argument::compile(
 
     std::string prefixes {};
     bool first_match {true};
+    bool is_mandatory {};
 
     for (voke::assembly_t &assembly : compile_info.expect) {
-      if (!assembly.must || (assembly.must && assembly.was_found)) {
+      is_mandatory = voke::io::has(assembly.behavior, voke::behavior::MANDATORY);
+      if (!is_mandatory || (is_mandatory && assembly.was_found)) {
         first_match = false;        
         continue;
       }

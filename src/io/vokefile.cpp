@@ -3,7 +3,7 @@
 #include <fstream>
 
 voke::flags_t voke::io::vokefile_read_lines(
-  std::string path,
+  std::string_view path,
   std::vector<std::string> &lines
 ) {
   voke::flags_t result {voke::result::ERROR_FAILED};
@@ -24,4 +24,21 @@ voke::flags_t voke::io::vokefile_read_lines(
   }
 
   return result;
+}
+
+voke::flags_t voke::io::vokefile_query_files_from_dir(
+  std::string_view dir_path,
+  std::vector<std::string> files
+) {
+  std::string path {};
+  for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(library.voke_path)) {
+    path = entry.path();
+    if (path.rfind(".voke") == std::string::npos) {
+      continue;
+    }
+
+    voke::log() << "detail: found voke-file at '" << path << '"'; 
+  }
+
+  return voke::result::SUCCESS;
 }

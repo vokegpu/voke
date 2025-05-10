@@ -17,11 +17,11 @@ voke::flags_t voke::cmd::sync::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-s", "--sync"}, 1, voke::mandatory},
-      {{"-v", "--version"}, 1, voke::optional},
-      {{"-b", "--binary"}, voke::empty, voke::optional},
-      {{"-t", "--targets"}, voke::empty, voke::optional},
-      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
+      {{"-s", "--sync"}, 1, voke::behavior::MANDATORY},
+      {{"-v", "--version"}, 1, voke::behavior::OPTIONAL},
+      {{"-b", "--binary"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-t", "--targets"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -39,8 +39,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-sat", "--sync-all-targets"}, voke::empty, voke::mandatory},
-      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
+      {{"-sat", "--sync-all-targets"}, voke::empty, voke::behavior::MANDATORY},
+      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -58,8 +58,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::mandatory},
-      {{"-el", "--extra-logs"}, voke::empty, voke::optional}
+      {{"-sal", "--sync-all-libraries"}, voke::empty, voke::behavior::MANDATORY},
+      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -85,7 +85,7 @@ voke::flags_t voke::cmd::sync::run() {
   if (
     voke::platform::sync_git_repository(
       voke::platform::vokegpu_voke_libraries_repository_url,
-      voke::platform::voke_system_path
+      voke::system_dir_path
     ) == voke::result::ERROR_FAILED
   ) {
     voke::log() << "error: could not sync voke-system libraries repository use -el or --extra-logs";
@@ -117,24 +117,24 @@ voke::flags_t voke::cmd::sync::run() {
         .voke_tag = args.at(0).values.at(0)
       };
 
-      voke::log() << "detail: searching for library named '" << library.voke_tag << "'...";
+      voke::log() << "detail: searching for library named '" << static_cast<std::string>(library["tag"]) << "'...";
 
-      library.voke_path += voke::platform::voke_system_path;
-      library.voke_path += "/";
-      library.voke_path += library.voke_tag;
+      library["path"] += voke::system_dir_path;
+      library["path"] += "/";
+      library["path"] += library["tag"];
 
-      voke::shell() << "cd " << library.voke_path;
+      voke::shell() << "cd " << static_cast<std::string>(library["path"]);
       if (voke::shell::result != 0) {
-        voke::log() << "error: no library found named '" << library.voke_tag << "'";
+        voke::log() << "error: no library found named '" << static_cast<std::string>(library["tag"]) << "'";
         return voke::result::SUCCESS;
       }
 
-      voke::log() << "detail: found, synching at '" << library.voke_path << '\''; 
+      voke::log() << "detail: found, synching at '" << static_cast<std::string>(library["path"]) << '\''; 
 
       library.repository_cache_path = (
-        voke::platform::voke_system_repository_cache_dir
+        voke::system_cached_repositories_dir_path
         +
-        library.voke_tag
+        library["tag"]
       );
 
       args = voke::argument::find({"-v", "--version"});
@@ -151,7 +151,7 @@ voke::flags_t voke::cmd::sync::run() {
         voke::log() << "detail: looking for voke-files...";
 
         std::vector<std::string> lookup_compilers_voke_file {};
-        voke::platform::voke_system_lookup_compilers_from_host_library(
+        voke::platform::voke_system_lookup_targets_from_library(
           library,
           lookup_compilers_voke_file
         );

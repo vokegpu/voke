@@ -17,6 +17,7 @@ namespace voke {
     std::vector<voke::compiler_t> compilers {};
     std::vector<voke::library_t> installed_libraries {};
     std::vector<voke::library_t> libraries {};
+    std::unordored_map<std::string, std::vector<voke::library_t>> 
     bool commands_state {};
   } app;
 }

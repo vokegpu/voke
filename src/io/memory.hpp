@@ -17,7 +17,7 @@ namespace voke {
   constexpr static bool mandatory {true};
   constexpr static bool optional {false};
 
-  enum result {
+  enum result : uint8_t {
     SUCCESS                  = 0,
     SUCCESS_PASS             = 1,
     WARNING_INVALID_COMPILER = 2,
@@ -39,6 +39,11 @@ namespace voke::io {
     std::string to_replace,
     std::string replace
   );
+
+  template<typename t>
+  constexpr bool has(voke::flags_t bits, t bit) {
+    return (bits & bit) == bit;
+  }
 }
 
 #endif

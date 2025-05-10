@@ -12,7 +12,7 @@ voke::flags_t voke::cmd::help::assert() {
     .lines = voke::app.raw_args,
     .match_first = true,
     .expect = {
-      {{"-h", "--help"}, voke::empty, voke::mandatory}
+      {{"-h", "--help"}, voke::empty, voke::behavior::MANDATORY}
     }
   };
 
