@@ -38,7 +38,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     return voke::result::ERROR_FAILED;
   }
 
-  voke::pack_info_t pack_info {
+  voke::resource_pack_info_t pack_info {
     .tag = "installed-compilers",
     .type = voke::host,
     .compiled_arguments = args
@@ -81,7 +81,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     return voke::result::ERROR_FAILED;
   }
 
-  voke::pack_info_t pack_info {
+  voke::resource_pack_info_t pack_info {
     .tag = "installed-libraries",
     .type = voke::host,
     .compiled_arguments = args
@@ -125,7 +125,7 @@ voke::flags_t voke::platform::voke_system_fetch_target(
     return voke::result::ERROR_FAILED;
   }
 
-  voke::pack_info_t pack_info {
+  voke::resource_pack_info_t pack_info {
     .tag = library["tag"],
     .type = voke::local,
     .compiled_arguments = args
@@ -142,7 +142,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
   voke::targe_t &target,
   std::vector<voke::operation_t> &operations
 ) {
-  voke::pack_info_t pack_info { .tag = library["tag"], .type = voke::host };
+  voke::resource_pack_info_t pack_info { .tag = library["tag"], .type = voke::host };
   voke::argument_compiler_info_t compiler_info {
     .tag = library["tag"],
     .expect = {

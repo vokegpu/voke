@@ -15,18 +15,25 @@ namespace voke {
   typedef std::unordered_map<std::string, voke::value_t> target_t;
   typedef std::unordered_map<std::string, voke::value_t> operation_t;
 
-  struct pack_info_t {
+  struct resource_pack_info_t {
   public:
     std::string tag {};
     std::string type {};
     std::vector<voke::argument_t> compiled_arguments {};
   };
+
+  template<typename t>
+  struct resource_query_info_t {
+  public:
+    std::string find {};
+    std::vector<t> &resources;
+  }
 }
 
 namespace voke::resource {
   template<typename t>
   voke::flags_t pack(
-    voke::pack_info_t &pack_info,
+    voke::resource_pack_info_t &pack_info,
     std::vector<t> &resources
   ) {
     t &resource {resources.emplace_back()};
@@ -62,7 +69,7 @@ namespace voke::resource {
 
   template<typename t>
   voke::flags_t packs(
-    voke::pack_info_t &pack_info,
+    voke::resource_pack_info_t &pack_info,
     std::vector<t> &resources
   ) {
     size_t line {1};
@@ -112,30 +119,18 @@ namespace voke::resource {
   }
 
   template<typename t>
-  size_t mandatory(
-    const std::vector<std::vector<string>> &mandatory_fields,
+  voke::flags_t query(
+    voke::resource_query_info_t<t> &query_info,
     t &resource
   ) {
-    voke::log() << "detail: checking for conflict(s) in '" << resource["tag"] << '\'';
-    size_t error_counter {};
-    bool contains {};
-    for (const std::vector<std::string> &fields : mandatory_fields) {
-      contains = false;
-      for (const std::string &field : fields) {
-        if ((contains = field.count(resource))) {
-          break;
-        }
+    for (t &query_resource : query_info.resources) {
+      if (resource["sync-tag"] == query_resource["sync-tag"]) {
+        resource = query_resource;
+        return voke::result::SUCCESS;
       }
-
-      if (contains) {
-        continue;
-      }
-
-      voke::log() << "fatal: failed to find mandatory field '" << field << '\'';
-      error_counter++;
     }
 
-    return error_counter;
+    return voke::result::ERROR_TIMEOUT;
   }
 }
 

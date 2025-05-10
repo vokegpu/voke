@@ -44,6 +44,20 @@ namespace voke {
     std::string raw {};
     size_t line {};
   public:
+    argument_t() = default;
+
+    argument_t(const std::string &first_value) {
+      this->values.emplace_back() = first_value;
+    }
+
+    argument_t(const char *p_first_value) {
+      this->values.emplace_back() = std::string(p_first_value);
+    }
+
+    operator std::string&() {
+      return this->values.at(0); // @TODO: chek if explode
+    }
+
     operator std::string() {
       if (this->values.empty()) {
         return "";

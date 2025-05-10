@@ -49,6 +49,6 @@ namespace voke {
   };
 }
 
-#define VOKE_ASSERT(status, message, return_if_failed) if (status) { message; return return_if_failed; }
+#define VOKE_ASSERT(status, message, returned) if (status != 0) { message; return returned; }
 
 #endif

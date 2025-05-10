@@ -41,6 +41,16 @@ namespace voke {
       this->raw << content;
       return *this;
     }
+  public:
+    template<typename t>
+    bool operator == (t result) {
+      return voke::shell_result_t == result;
+    }
+
+    template<typename t>
+    bool operator != (t result) {
+      return voke::shell_result_t != result;
+    }
   };
 }
 
