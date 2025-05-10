@@ -20,6 +20,12 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::app.raw_args.clear();
   voke::app.raw_args.emplace_back() = raw;
 
+  voke::shell() << "git --version";
+  if (voke::shell::result != 0) {
+    voke::log() << "fatal: command 'git' not found";
+    return voke::log::flush();
+  }
+
   voke::cmd::add(
     voke::cmd::version::assert,
     voke::cmd::version::run

@@ -14,7 +14,7 @@ namespace voke::io {
 
   voke::flags_t vokefile_query_files_from_dir(
     std::string_view dir_path,
-    std::vector<std::string> files
+    std::vector<std::string> &files
   );
 }
 

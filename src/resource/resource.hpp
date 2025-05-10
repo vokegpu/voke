@@ -9,10 +9,11 @@
 #include <string>
 
 namespace voke {
-  typedef std::unordered_map<std::string, voke::argument_t> compiler_t;
-  typedef std::unordered_map<std::string, voke::argument_t> library_t;
-  typedef std::unordered_map<std::string, voke::argument_t> target_t;
-  typedef std::unordered_map<std::string, voke::argument_t> operation_t;
+  typedef voke::argument value_t;
+  typedef std::unordered_map<std::string, voke::value_t> compiler_t;
+  typedef std::unordered_map<std::string, voke::value_t> library_t;
+  typedef std::unordered_map<std::string, voke::value_t> target_t;
+  typedef std::unordered_map<std::string, voke::value_t> operation_t;
 
   struct pack_info_t {
   public:

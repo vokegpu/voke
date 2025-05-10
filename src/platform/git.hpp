@@ -5,16 +5,16 @@
 
 #include "resource/resource.hpp"
 
-namespace voke::platform {
-  const static std::string vokegpu_voke_libraries_repository_url {"https://github.com/vokegpu/voke-libraries"};
+namespace voke {
+  const static std::string vokegpu_repository_voke_repositories_url {"https://github.com/vokegpu/voke-repositories/"};
+}
 
+namespace voke::platform {
   voke::flags_t sync_git_repository(
     std::string url,
     std::string path_to_clone,
     std::string clone_args = ""
   );
-
-  void voke_system_fetch_voke_library_git(voke::library_t &library);
 }
 
 #endif

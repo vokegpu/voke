@@ -294,20 +294,18 @@ voke::flags_t voke::argument::only(
   return voke::result::SUCCESS;
 }
 
-std::vector<voke::argument_t> voke::argument::find(
+voke::argument_t &voke::argument::find(
   const std::vector<std::string> &prefixes
 ) {
-  std::vector<voke::argument_t> found_args {};
   for (voke::argument_t &arg : voke::app.args) {
     for (const std::string &prefix : prefixes) {
       if (arg.prefix == prefix) {
-        found_args.push_back(arg);
-        break;
+        return arg;
       }
     }
   }
 
-  return found_args;
+  return voke::argument::not_found;
 }
 
 voke::flags_t voke::argument::throw_unknown_command_or_arguments() {

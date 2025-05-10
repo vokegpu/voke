@@ -7,6 +7,7 @@ void voke::cmd::add(
   voke::command_t assert,
   voke::command_t run
 ) {
+  voke::flags result {};
   voke::app.commands_state = (
     voke::app.commands_state
     ||
@@ -15,15 +16,19 @@ void voke::cmd::add(
       &&
       (
         (
-          voke::shell::verbose_level = voke::argument::find({"-el", "--extra-logs"}).size()
+          voke::argument::find({"-el", "--extra-logs"})
           ==
-          1 ? voke::verbose_level::LEVEL_TWO : voke::verbose_level::LEVEL_ONE
+          voke::argument::not_found ? voke::verbose_level::LEVEL_TWO : voke::verbose_level::LEVEL_ONE
         )
         ||
         true
       )
       &&
-      run() == voke::result::SUCCESS
+      (
+        (result = run()) == voke::result::SUCCESS
+        ||
+        result == voke::result::ERROR_FAILED
+      )
     )
   );
 }

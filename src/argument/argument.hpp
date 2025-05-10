@@ -67,10 +67,20 @@ namespace voke {
 
       this->values.at(0) = std::string(p_value);
     }
+
+    bool operator == (voke::argumnet_t &l) {
+      return this->line == l.line;
+    }
+
+    bool operator != (voke::argumnet_t &l) {
+      return this->line != l.line;
+    }
   };
 }
 
 namespace voke::argument {
+  const static voke::argument_t not_found {.line = voke::not_empty};
+
   voke::flags_t parse(
     voke::argument_parser_info_t &parser_info,
     std::vector<voke::argument_t> &argument_list
@@ -81,7 +91,7 @@ namespace voke::argument {
     std::vector<voke::argument_t> &argument_list
   );
 
-  std::vector<voke::argument_t> find(
+  voke::argument_t &find(
     const std::vector<std::string> &prefixes
   );
 

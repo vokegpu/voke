@@ -184,7 +184,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
 voke::flags_t voke::platform::compile_libraries() {
   voke::result result {};
   for (voke::library_t &library : voke::app.libraries) {
-    if (library.targets.empty()) {
+    if (library["targets"].empty()) {
       voke::log()
         << "warning: skipping library voke-file '"
         << static_cast<std::string>(library["path"])
@@ -194,7 +194,7 @@ voke::flags_t voke::platform::compile_libraries() {
 
     result = voke::result::SUCCESS_PASS;
     for (voke::compiler_t &compiler : voke::app.installed_compilers) {
-      for (std::string &target : library.targets) {
+      for (std::string &target : library["targets"]) {
         if (target == compiler["tag"]) {
           result = voke::result::SUCCESS;
           break;
@@ -211,34 +211,34 @@ voke::flags_t voke::platform::compile_libraries() {
           << compiler["tag"] << "'...";
         
         voke::io::replace(
-          library.run,
+          library["run"],
           "\\$dir",
-          library.repository_cache_path
+          library["repository_cache_path"]
         );
 
         voke::io::replace(
-          library.run,
+          library["run"],
           "\\$cpp",
-          compiler.binary_dir + "/" + compiler.cpp_compiler
+          compiler["binary_dir"] + "/" + compiler["cpp_compiler"]
         );
 
         voke::io::replace(
-          library.run,
+          library["run"],
           "\\$c",
-          compiler.binary_dir + "/" + compiler.c_compiler
+          compiler["binary_dir"] + "/" + compiler["c_compiler"]
         );
 
         voke::io::replace(
-          library.run,
+          library["run"],
           "$cmake-build-dir",
           "./cmake-build"
         );
 
         voke::shell()
           << "cd "
-          << library.repository_cache_path
+          << library["repository_cache_path"]
           << " && "
-          << library.run;
+          << library["run"];
 
         result = (
           voke::shell::result
@@ -250,13 +250,13 @@ voke::flags_t voke::platform::compile_libraries() {
         if (
           result == voke::result::SUCCESS
           &&
-          !library.repository_cache_path.empty()
+          !library["repository_cache_path"].empty()
           &&
-          library.build_system == "cmake"
+          library["build_system"] == "cmake"
         ) {
           voke::shell()
             << "sudo rm -r "
-            << library.repository_cache_path
+            << library["repository_cache_path"]
             << "/cmake-build";
         }
 
