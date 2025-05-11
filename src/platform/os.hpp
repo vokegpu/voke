@@ -36,6 +36,11 @@ namespace voke::platform {
     std::vector<voke::operation_t> &operations
   );
 
+  voke::flags_t voke_system_compile_library_from_target(
+    voke::library_t &library,
+    voke::target_t &target
+  );
+
   voke::flags_t compile_libraries();
 }
 

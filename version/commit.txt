@@ -5,3 +5,5 @@
 -- Sync command now also include compilers.
 -- Sync command contains new args for sync all: `-sal --sync-all-libraries` `-sac --sync-all-compilers`.
 -- Extra-logs option that make the verbose level as two.
+-- Interpret-based system for compiling arguments --- not C/C++ compilers ---.
+-- A small unique-purpose scripting language for explicit arguments, named voke, ends with `.voke`. 

@@ -7,6 +7,8 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <algorithm>
+#include <functional>
 
 namespace voke {
   typedef voke::argument value_t;
@@ -25,7 +27,7 @@ namespace voke {
   template<typename t>
   struct resource_query_info_t {
   public:
-    std::string find {};
+    std::function<bool(t &resource)> predicate {};
     std::vector<t> &resources;
   }
 }
@@ -123,14 +125,25 @@ namespace voke::resource {
     voke::resource_query_info_t<t> &query_info,
     t &resource
   ) {
-    for (t &query_resource : query_info.resources) {
-      if (resource["sync-tag"] == query_resource["sync-tag"]) {
-        resource = query_resource;
-        return voke::result::SUCCESS;
-      }
-    }
+    return (
+      (
+        std::find_if(
+          query_info.resources.begin(),
+          query_info.resources.end(),
+          [resource, query_info.predicate](t &item) {
+            if (query_info.predicate(item)) {
+              resource = item;
+              return true;
+            }
 
-    return voke::result::ERROR_TIMEOUT;
+            return false;
+          },
+        ) != query_info.resources.end()
+      ) ?
+      voke::result::ERROR_TIMEOUT
+      :
+      voke::result::SUCCESS
+    );
   }
 }
 

@@ -9,7 +9,6 @@
 
 voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   voke::log() << "detail: looking for installed compilers...";
-  voke::flags_t result {voke::result::SUCCESS};
 
   std::vector<std::string> lines {};
   voke::io::vokefile_read_lines(voke::system_installed_compilers_path, lines);
@@ -29,14 +28,14 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   };
 
   std::vector<voke::argument_t> args {};
-  if (
-      voke::argument::compile(
+  VOKE_ASSERT(
+    voke::argument::compile(
       compiler_info,
       args
-    ) != voke::result::SUCCESS
-  ) {
-    return voke::result::ERROR_FAILED;
-  }
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
+  );
 
   voke::resource_pack_info_t pack_info {
     .tag = "installed-compilers",
@@ -44,15 +43,21 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     .compiled_arguments = args
   };
 
-  return voke::resource::packs<voke::compiler_t>(
-    pack_info,
-    voke::app.installed_compilers
+  VOKE_ASSERT(
+    voke::resource::packs<voke::compiler_t>(
+      pack_info,
+      voke::app.installed_compilers
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
   );
+
+  voke::log() << "detail: checked " << voke::app.installed_compilers.size() << " compilers installed";
+  return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   voke::log() << "detail: looking for installed libraries...";
-  voke::flags_t result {voke::result::SUCCESS};
 
   std::vector<std::string> lines {};
   voke::io::vokefile_read_lines(voke::system_installed_libraries_path, lines);
@@ -72,14 +77,14 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   };
 
   std::vector<voke::argument_t> args {};
-  if (
-      voke::argument::compile(
+  VOKE_ASSERT(
+    voke::argument::compile(
       compiler_info,
       args
-    ) != voke::result::SUCCESS
-  ) {
-    return voke::result::ERROR_FAILED;
-  }
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
+  );
 
   voke::resource_pack_info_t pack_info {
     .tag = "installed-libraries",
@@ -87,18 +92,25 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     .compiled_arguments = args
   };
 
-  return voke::resource::packs<voke::library_t>(
-    pack_info,
-    voke::app.installed_libraries
+  VOKE_ASSERT(
+    voke::resource::packs<voke::library_t>(
+      pack_info,
+      voke::app.installed_libraries
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
   );
+
+  voke::log() << "detail: checked " << voke::app.installed_compilers.size() << " libraries installed";
+  return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::platform::voke_system_fetch_target(
   voke::library_t &library,
   voke::target_t &target
 ) {
-  voke::flags_t result {voke::result::SUCCESS};
-  
+  voke::log() << "detail: fetching library target...";
+
   std::vector<std::string> lines {};
   voke::io::vokefile_read_lines(library["path"], lines);
 
@@ -116,14 +128,14 @@ voke::flags_t voke::platform::voke_system_fetch_target(
   };
   
   std::vector<voke::argument_t> args {};
-  if (
-      voke::argument::compile(
-        compiler_info,
-        args
-      ) != voke::result::SUCCESS
-    ) {
-    return voke::result::ERROR_FAILED;
-  }
+  VOKE_ASSERT(
+    voke::argument::compile(
+      compiler_info,
+      args
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
+  );
 
   voke::resource_pack_info_t pack_info {
     .tag = library["tag"],
@@ -131,10 +143,23 @@ voke::flags_t voke::platform::voke_system_fetch_target(
     .compiled_arguments = args
   };
 
-  return voke::argument::pack<voke::target_t>(
-    pack_info,
-    target
+  VOKE_ASSERT(
+    voke::argument::pack<voke::target_t>(
+      pack_info,
+      target
+    ),
+    voke::empty,
+    voke::result::ERROR_FAILED
   );
+
+  std::string &url {target["url"]};
+  std::string end {};
+
+  voke::io::cut_end_of_url(url, end);
+  target["cache-dir"] = voke::system_cached_repositories_dir_path + end;
+
+  voke::log() << "detail: library target '" << end << "' fetched";
+  return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
@@ -159,23 +184,23 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
     }
 
     pack_info.compiled_arguments.clear();
-    if (
+    VOKE_ASSERT(
       voke::argument::compile(
         compiler_info,
         pack_info.compiled_arguments
-      ) != voke::result::SUCCESS
-    ) {
-      return voke::result::ERROR_FAILED;
-    }
+      ),
+      voke::empty,
+      voke::result::ERROR_FAILED
+    );
 
-    if (
+    VOKE_ASSERT(
       voke::resource::pack(
         pack_info,
         operations.emplace_back()
-      ) != voke::result::SUCCESS
-    ) {
-      return voke::result::ERROR_FAILED;
-    }
+      ),
+      voke::empty,
+      voke::result::ERROR_FAILED
+    );
   }
 
   return voke::result::SUCCESS;
@@ -285,4 +310,11 @@ voke::flags_t voke::platform::compile_libraries() {
   }   
 
   return voke::result::SUCCESS;
+}
+
+voke::flags_t voke::voke_system_compile_library_from_target(
+  voke::library_t &library,
+  voke::target_t &target
+) {
+  
 }

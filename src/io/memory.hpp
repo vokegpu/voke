@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdint>
 #include <vector>
+#include <algorithm>
 
 namespace voke {
   typedef uint32_t flags_t;
@@ -32,6 +33,11 @@ namespace voke::io {
   std::vector<std::string> split(
     std::string &str,
     std::string delimiter
+  );
+
+  void cut_end_of_url(
+    std::string &url,
+    std::string &end
   );
 
   void replace(

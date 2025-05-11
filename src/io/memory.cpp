@@ -22,6 +22,20 @@ std::vector<std::string> voke::io::split(
   return splitted;
 }
 
+void voke::io::cut_end_of_url(
+  std::string &url,
+  std::string &end
+) {
+  if (end.back() == '/') {
+    end.pop_back();
+  }
+
+  size_t slash {url.rfind("/")};
+  if (slash != std::string::npos) {
+    end = url.substr(slash, url.size());
+  }
+}
+
 void voke::io::replace(
   std::string &str_to_replace,
   std::string to_replace,
