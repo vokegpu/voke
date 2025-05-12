@@ -24,39 +24,47 @@ voke::flags_t voke::cmd::help::assert() {
 
 voke::flags_t voke::cmd::help::run() {
   std::string help {
-R"(detail:
+R"(🐈‍⬛
+sync a C/C++ library or compiler:
+  voke |-s *
+       |--sync *
+       optional --- version to look-up:
+         | -v *         
+         | --version *
+       optional --- pre-compiled binary:
+         | -b
+         | --binary
+       optional --- specify compilers to sync the library:
+         | -t
+         | --targets
+       optional --- force sync (re-installing):
+         | -f
+         | --force
 
-><
+remove a C/C++ library or compiler from the system:
+  voke | -r *
+       | --remove *
+
+sync all C/C++ compilers/libraries installed under system:
+  voke | -sac                  
+       | --sync-all-compilers
+       | -sal                  
+       | --sync-all-libraries
+
+output software version:
+  voke | -v                    
+       | --version
+
+optional --- expose shell commands outputs:
+ voke | -el
+      | --extra-logs
 
 for more development info visit:
 | - | https://github.com/vokegpu/voke
-| - | https://github.com/vokegpu/voke-docs
-
-use:
-  voke | -s *                  sync a C/C++ library or a compiler
-       | --sync *
-        | -v *                 optional: version to look-up
-        | --version *
-        | -b                   optional: pre-compiled binary
-        | --binary
-        | -c                   optional: specify compilers to sync the library, e.g: clang-msvc64 clang-mingw64 etc 
-        | --compilers
-
-  voke | -r *                  remove a C/C++ library or a compiler from the system
-       | --remove *
-
-  voke | -sac                  sync all C/C++ compilers-installed in voke-system 
-       | --sync-all-compilers
-       | -sal                  sync all C/C++ libraries-installed in voke-system 
-       | --sync-all-libraries
-
-  voke | -v                    output software version
-       | --version
-
-version:)"
+| - | https://github.com/vokegpu/voke-docs)"
   };
 
-  voke::log() << help << "\n  " << voke::app.version;
+  voke::log() << help;
   return voke::result::SUCCESS;
 }
 
