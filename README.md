@@ -8,7 +8,7 @@ The plans for now is focus on Windows support, Linux is not the priority (but it
 
 Welcome ><, if you want to contribute check the [Vokegpu standard](https://github.com/vokegpu/standard), thanks.
 
-All you need to compile: CMake, Ninja. GNU, LLVM, or a Microsoft compiler.
+All you need to compile: CMake, Ninja, std17. GNU, LLVM, or a Microsoft compiler.
 ```sh
 cmake -S . -B ./cmake-build -G Ninja
 cmake --build ./cmake-build
@@ -21,26 +21,39 @@ No C++ library is needed, just external dependencies tools like CMake, Ninja, Gi
 Note: You must have `git` installed, [visit here for download](https://git-scm.com/).
 
 ```sh
-use:
-  voke | -s *                  sync a C/C++ library or a compiler
-       | --sync *
-        | -v *                 optional: version to look-up
-        | --version *
-        | -b                   optional: pre-compiled binary
-        | --binary
-        | -c                   optional: specify compilers to sync the library, e.g: clang-msvc64 clang-mingw64 etc 
-        | --compilers
+sync a C/C++ library or compiler:
+  voke |-s *
+       |--sync *
+       optional --- version to look-up:
+         | -v *         
+         | --version *
+       optional --- pre-compiled binary:
+         | -b
+         | --binary
+       optional --- specify compilers to sync the library:
+         | -t
+         | --targets
+       optional --- force sync (re-installing):
+         | -f
+         | --force
 
-  voke | -r *                  remove a C/C++ library or a compiler from the system
+remove a C/C++ library or compiler from the system:
+  voke | -r *
        | --remove *
 
-  voke | -sat                  sync all C/C++ compilers-installed in voke-system 
-       | --sync-all-targets
-       | -sal                  sync all C/C++ libraries-installed in voke-system 
+sync all C/C++ compilers/libraries installed under system:
+  voke | -sac                  
+       | --sync-all-compilers
+       | -sal                  
        | --sync-all-libraries
 
-  voke | -v                    output software version
+output software version:
+  voke | -v                    
        | --version
+
+optional --- expose shell commands outputs:
+ voke | -el
+      | --extra-logs
 ```
 
 ### Libraries
