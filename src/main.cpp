@@ -2,6 +2,7 @@
 #include "cmd/cmd.hpp"
 #include "voke.hpp"
 #include "platform/git.hpp"
+#include "io/shell.hpp"
 
 #include <iostream>
 

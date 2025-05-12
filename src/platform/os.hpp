@@ -27,21 +27,21 @@ namespace voke::platform {
 
   voke::flags_t voke_system_fetch_library_target(
     voke::library_t &library,
-    voke::targe_t &target
+    voke::target_t &target
   );
 
   voke::flags_t voke_system_fetch_library_target_operations(
     voke::library_t &library,
-    voke::targe_t &target,
+    voke::target_t &target,
     std::vector<voke::operation_t> &operations
   );
 
-  voke::flags_t voke_system_compile_library_from_target(
+  voke::flags_t voke_system_compile_host_library(
     voke::library_t &library,
-    voke::target_t &target
+    voke::target_t &target,
+    std::vector<voke::operation_t> &operations,
+    voke::compiler_t &compiler
   );
-
-  voke::flags_t compile_libraries();
 }
 
 #endif

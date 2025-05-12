@@ -7,7 +7,7 @@ void voke::cmd::add(
   voke::command_t assert,
   voke::command_t run
 ) {
-  voke::flags result {};
+  voke::flags_t result {};
   voke::app.commands_state = (
     voke::app.commands_state
     ||

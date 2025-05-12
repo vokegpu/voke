@@ -2,6 +2,8 @@
 #include "voke.hpp"
 #include "io/log.hpp"
 
+voke::argument_t voke::argument::not_found {voke::empty};
+
 voke::flags_t voke::argument::parse(
   voke::argument_parser_info_t &parser_info,
   std::vector<voke::argument_t> &argument_list
@@ -68,9 +70,8 @@ voke::flags_t voke::argument::parse(
     }
 
     if (is_an_new_arg) {
-      serialized_arg = {
-        .prefix=arg
-      };
+      serialized_arg = {};
+      serialized_arg.prefix = arg;
 
       serialized_arg.raw += serialized_arg.prefix;
     }

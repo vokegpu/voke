@@ -4,16 +4,15 @@
 #include "memory.hpp"
 
 #include <vector>
-#include <string_view>
 
 namespace voke::io {
   voke::flags_t vokefile_read_lines(
-    std::string_view path,
+    const std::string &path,
     std::vector<std::string> &lines
   );
 
   voke::flags_t vokefile_query_files_from_dir(
-    std::string_view dir_path,
+    const std::string &dir_path,
     std::vector<std::string> &files
   );
 }

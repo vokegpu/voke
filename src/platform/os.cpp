@@ -105,7 +105,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
   return voke::result::SUCCESS;
 }
 
-voke::flags_t voke::platform::voke_system_fetch_target(
+voke::flags_t voke::platform::voke_system_fetch_library_target(
   voke::library_t &library,
   voke::target_t &target
 ) {
@@ -115,7 +115,7 @@ voke::flags_t voke::platform::voke_system_fetch_target(
   voke::io::vokefile_read_lines(library["path"], lines);
 
   voke::argument_compiler_info_t compiler_info {
-    .tag = library["tag"],
+    .tag = static_cast<std::string&>(library["tag"]),
     .lines = lines,
     .expect = {
       {{"--tag"}, voke::not_empty, voke::behavior::MANDATORY},
@@ -138,13 +138,13 @@ voke::flags_t voke::platform::voke_system_fetch_target(
   );
 
   voke::resource_pack_info_t pack_info {
-    .tag = library["tag"],
+    .tag = static_cast<std::string&>(library["tag"]),
     .type = voke::local,
     .compiled_arguments = args
   };
 
   VOKE_ASSERT(
-    voke::argument::pack<voke::target_t>(
+    voke::resource::pack<voke::target_t>(
       pack_info,
       target
     ),
@@ -152,7 +152,7 @@ voke::flags_t voke::platform::voke_system_fetch_target(
     voke::result::ERROR_FAILED
   );
 
-  std::string &url {target["url"]};
+  std::string &url {static_cast<std::string&>(target["url"])};
   std::string end {};
 
   voke::io::cut_end_of_url(url, end);
@@ -164,12 +164,12 @@ voke::flags_t voke::platform::voke_system_fetch_target(
 
 voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
   voke::library_t &library,
-  voke::targe_t &target,
+  voke::target_t &target,
   std::vector<voke::operation_t> &operations
 ) {
-  voke::resource_pack_info_t pack_info { .tag = library["tag"], .type = voke::host };
+  voke::resource_pack_info_t pack_info { .tag = static_cast<std::string&>(library["tag"]), .type = voke::host };
   voke::argument_compiler_info_t compiler_info {
-    .tag = library["tag"],
+    .tag = static_cast<std::string&>(library["tag"]),
     .expect = {
       {{"--tag"}, 1, voke::behavior::MANDATORY},
       {{"--type"}, 1, voke::behavior::MANDATORY},
@@ -178,7 +178,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
     }
   };
 
-  for (&[key, value] : target) {
+  for (auto &[key, value] : target) {
     if (key.find("operations") == std::string::npos) {
       continue;
     }
@@ -194,7 +194,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
     );
 
     VOKE_ASSERT(
-      voke::resource::pack(
+      voke::resource::pack<voke::operation_t>(
         pack_info,
         operations.emplace_back()
       ),
@@ -206,115 +206,69 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
   return voke::result::SUCCESS;
 }
 
-voke::flags_t voke::platform::compile_libraries() {
-  voke::result result {};
-  for (voke::library_t &library : voke::app.libraries) {
-    if (library["targets"].empty()) {
-      voke::log()
-        << "warning: skipping library voke-file '"
-        << static_cast<std::string>(library["path"])
-        << "', no C/C++ compiler target specified";
-      continue;
-    }
-
-    result = voke::result::SUCCESS_PASS;
-    for (voke::compiler_t &compiler : voke::app.installed_compilers) {
-      for (std::string &target : library["targets"]) {
-        if (target == compiler["tag"]) {
-          result = voke::result::SUCCESS;
-          break;
-        }
-      }
-
-      if (result == voke::result::SUCCESS) {
-        result = voke::result::SUCCESS_PASS;
-
-        voke::log()
-          << "detail: building library '"
-          << static_cast<std::string>(library["tag"])
-          << "' for C/C++ target '"
-          << compiler["tag"] << "'...";
-        
-        voke::io::replace(
-          library["run"],
-          "\\$dir",
-          library["repository_cache_path"]
-        );
-
-        voke::io::replace(
-          library["run"],
-          "\\$cpp",
-          compiler["binary_dir"] + "/" + compiler["cpp_compiler"]
-        );
-
-        voke::io::replace(
-          library["run"],
-          "\\$c",
-          compiler["binary_dir"] + "/" + compiler["c_compiler"]
-        );
-
-        voke::io::replace(
-          library["run"],
-          "$cmake-build-dir",
-          "./cmake-build"
-        );
-
-        voke::shell()
-          << "cd "
-          << library["repository_cache_path"]
-          << " && "
-          << library["run"];
-
-        result = (
-          voke::shell::result
-          ==
-          0
-          ? voke::result::SUCCESS : voke::result::ERROR_FAILED
-        );
-
-        if (
-          result == voke::result::SUCCESS
-          &&
-          !library["repository_cache_path"].empty()
-          &&
-          library["build_system"] == "cmake"
-        ) {
-          voke::shell()
-            << "sudo rm -r "
-            << library["repository_cache_path"]
-            << "/cmake-build";
-        }
-
-        break;
-      }
-    }
-
-    switch (result) {
-    case voke::result::SUCCESS_PASS:
-      voke::log() << "warning: nothing happened actually";
-      break;
-    case voke::result::SUCCESS:
-      voke::log()
-        << "detail: library '"
-        << static_cast<std::string>(library["tag"])
-        << "' successfully build";
-      break;
-    case voke::result::ERROR_FAILED:
-      voke::log()
-        << "detail: could not build library '"
-        << static_cast<std::string>(library["tag"]) << "'";
-      break;
-    default:
-      break;
-    }
-  }   
-
-  return voke::result::SUCCESS;
-}
-
-voke::flags_t voke::voke_system_compile_library_from_target(
+voke::flags_t voke::platform::voke_system_compile_host_library(
   voke::library_t &library,
-  voke::target_t &target
+  voke::target_t &target,
+  std::vector<voke::operation_t> &operations,
+  voke::compiler_t &compiler
 ) {
-  
+  voke::log() << "detail: building library'" << static_cast<std::string&>(library["tag"]) << "'...";
+
+  std::string &cache_dir {static_cast<std::string&>(library["cache-dir"])};
+  std::string &run {static_cast<std::string&>(library["run"])};
+  std::string &cpp {static_cast<std::string&>(library["cpp"])};
+  std::string &c {static_cast<std::string&>(library["c"])};
+  std::string &compiler_binary_dir {static_cast<std::string&>(library["binary-dir"])};
+
+  voke::io::replace(
+    run,
+    "\\$dir",
+    cache_dir
+  );
+
+  voke::io::replace(
+    run,
+    "\\$cpp",
+    compiler_binary_dir + "/" + cpp
+  );
+
+  voke::io::replace(
+    run,
+    "\\$c",
+    compiler_binary_dir + "/" + c
+  );
+
+  voke::io::replace(
+    run,
+    "$cmake-build-dir",
+    "./cmake-build"
+  );
+
+  voke::shell()
+    << "cd "
+    << cache_dir
+    << " && "
+    << run;
+
+  voke::flags_t result {
+    voke::shell::result
+    ==
+    0
+    ? voke::result::SUCCESS : voke::result::ERROR_FAILED
+  };
+
+  if (
+    result == voke::result::SUCCESS
+    &&
+    !cache_dir.empty()
+    &&
+    static_cast<std::string&>(library["build_system"]) == "cmake"
+  ) {
+    voke::shell()
+      << "sudo rm -r "
+      << cache_dir
+      << "/cmake-build";
+  }
+
+  voke::log() << "detail: building done";
 }

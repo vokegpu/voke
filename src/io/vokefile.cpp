@@ -1,13 +1,16 @@
 #include "vokefile.hpp"
+#include "io/log.hpp"
 
 #include <fstream>
+#include <iostream>
+#include <filesystem>
 
 voke::flags_t voke::io::vokefile_read_lines(
-  std::string_view path,
+  const std::string &path,
   std::vector<std::string> &lines
 ) {
   voke::flags_t result {voke::result::ERROR_FAILED};
-  std::ifstream file(path);
+  std::ifstream file(path.data());
 
   if (file.is_open()) {
     result = voke::result::SUCCESS;
@@ -27,11 +30,11 @@ voke::flags_t voke::io::vokefile_read_lines(
 }
 
 voke::flags_t voke::io::vokefile_query_files_from_dir(
-  std::string_view dir_path,
+  const std::string &dir_path,
   std::vector<std::string> &files
 ) {
   std::string path {};
-  for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(library["path"])) {
+  for (const std::filesystem::directory_entry &entry : std::filesystem::directory_iterator(dir_path)) {
     path = entry.path();
     if (path.rfind(".voke") == std::string::npos) {
       continue;

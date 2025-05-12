@@ -6,6 +6,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace voke {
   extern struct app_t {
@@ -17,7 +18,7 @@ namespace voke {
     std::vector<voke::compiler_t> compilers {};
     std::vector<voke::library_t> installed_libraries {};
     std::vector<voke::library_t> libraries {};
-    std::unordored_map<std::string, std::vector<voke::target_t>> targets {}; 
+    std::unordered_map<std::string, std::vector<voke::target_t>> targets {}; 
     bool commands_state {};
   } app;
 }

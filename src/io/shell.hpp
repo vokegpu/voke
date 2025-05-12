@@ -44,12 +44,12 @@ namespace voke {
   public:
     template<typename t>
     bool operator == (t result) {
-      return voke::shell_result_t == result;
+      return voke::shell::result == result;
     }
 
     template<typename t>
     bool operator != (t result) {
-      return voke::shell_result_t != result;
+      return voke::shell::result != result;
     }
   };
 }

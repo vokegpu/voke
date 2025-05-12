@@ -25,7 +25,7 @@ namespace voke {
 
   struct argument_compiler_info_t {
   public:
-    std::string_view tag {};
+    std::string tag {};
     std::vector<std::string> lines {};
     bool match_first {};
     std::vector<assembly_t> expect {};
@@ -45,6 +45,10 @@ namespace voke {
     size_t line {};
   public:
     argument_t() = default;
+
+    argument_t(size_t line) {
+      this->line = line;
+    }
 
     argument_t(const std::string &first_value) {
       this->values.emplace_back() = first_value;
@@ -66,34 +70,18 @@ namespace voke {
       return this->values.at(0);
     }
 
-    operator = (const std::string &value) {
-      if (this->values.empty()) {
-        this->values.emplace_back();
-      }
-
-      this->values.at(0) = value;
-    }
-
-    operator = (const char *p_value) {
-      if (this->values.empty()) {
-        this->values.emplace_back();
-      }
-
-      this->values.at(0) = std::string(p_value);
-    }
-
-    bool operator == (voke::argumnet_t &l) {
+    bool operator == (const voke::argument_t &l) {
       return this->line == l.line;
     }
 
-    bool operator != (voke::argumnet_t &l) {
+    bool operator != (const voke::argument_t &l) {
       return this->line != l.line;
     }
   };
 }
 
 namespace voke::argument {
-  const static voke::argument_t not_found {.line = voke::not_empty};
+  extern voke::argument_t not_found;
 
   voke::flags_t parse(
     voke::argument_parser_info_t &parser_info,

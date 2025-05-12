@@ -88,7 +88,7 @@ voke::flags_t voke::cmd::sync::run() {
 
   VOKE_ASSERT(
     voke::platform::sync_git_repository(
-      voke::platform::vokegpu_voke_libraries_repository_url,
+      voke::vokegpu_repository_voke_repositories_url,
       voke::system_dir_path
     ),
     voke::log() << "error: could not sync voke-system repositories, use -el or --extra-logs",
@@ -110,21 +110,21 @@ voke::flags_t voke::cmd::sync::run() {
         voke::result::ERROR_FAILED
       );
 
-      std::string &sync_tag {sync_argument};
+      std::string &sync_tag {static_cast<std::string&>(sync_argument)};
       voke::library_t host_library {
         {"tag", sync_tag},
         {"sync-dir", voke::system_dir_path + sync_tag},
         {"version", "?"},
-        {"cloned": "0"}
+        {"cloned", "0"}
       };
 
       VOKE_ASSERT(
-        voke::shell() << "cd " << host_library["sync-dir"],
+        voke::shell() << "cd " << static_cast<std::string&>(host_library["sync-dir"]),
         voke::log() << "error: could not find library named '" << sync_tag << '\'',
         voke::result::ERROR_FAILED
       );
 
-      voke::argument_t &targets_argument {voke::io::find({"-t", "--targets"})};
+      voke::argument_t &targets_argument {voke::argument::find({"-t", "--targets"})};
       std::string not_found_target {};
 
       VOKE_ASSERT(
@@ -162,7 +162,7 @@ voke::flags_t voke::cmd::sync::run() {
       );
 
       std::vector<voke::target_t> &compiler_targets {voke::app.targets[sync_tag]};
-      for (std::string &vokefiles_path : compiler_targets) {
+      for (std::string &vokefiles_path : compiler_targets_vokefile_path) {
         voke::target_t &target {
           compiler_targets.emplace_back()
         };
@@ -177,7 +177,7 @@ voke::flags_t voke::cmd::sync::run() {
         );
       }
 
-      voke::log() << "detail: checking if library is already satisfied..."
+      voke::log() << "detail: checking if library is already satisfied...";
 
       voke::library_t local_library {
         {"version", "?"}
@@ -185,7 +185,7 @@ voke::flags_t voke::cmd::sync::run() {
 
       voke::resource_query_info_t<voke::library_t> local_library_query_info {
         .predicate = [sync_tag](voke::library_t &library) {
-          return sync_tag == library["tag"];
+          return sync_tag == static_cast<std::string&>(library["tag"]);
         },
         .resources = voke::app.installed_libraries
       };
@@ -203,8 +203,8 @@ voke::flags_t voke::cmd::sync::run() {
 
       voke::argument_t &force_argument {voke::argument::find({"-f", "--force"})};
 
-      std::string &local_version {local_library["version"]};
-      std::string &host_version {host_version["version"]};
+      std::string &local_version {static_cast<std::string&>(local_library["version"])};
+      std::string &host_version {static_cast<std::string&>(host_library["version"])};
 
       VOKE_ASSERT(
         (
@@ -214,7 +214,7 @@ voke::flags_t voke::cmd::sync::run() {
           &&
           local_version == host_version
         ),
-        voke::log() << "detail: library '" << sync_tag << "' version '" << local_library["version"] << "' already satisfied, keep using force option '-f | --force'",
+        voke::log() << "detail: library '" << sync_tag << "' version '" << local_version << "' already satisfied, keep using force option '-f | --force'",
         voke::result::SUCCESS
       );
 
@@ -229,19 +229,18 @@ voke::flags_t voke::cmd::sync::run() {
       std::unordered_map<std::string, bool> cloned_repositories {};
 
       for (voke::target_t &target : compiler_targets) {
-        if (
-          targets_argument != voke::argument::not_found
-          &&
-          std::find_if(
-            targets_argument.values.begin(),
-            targets_argument.values.end(),
-            [target](std::string &value) { return value == target["tag"]; }
-          ) == targets_argument.values.end()
-        ) {
-          continue;
-        }
+        operations.clear();
+        VOKE_ASSERT(
+          voke::platform::voke_system_fetch_library_target_operations(
+            host_library,
+            target,
+            operations
+          ),
+          voke::log() << "error: could not obtain operations from target '" << static_cast<std::string&>(target["path"]) << '\'',
+          voke::result::ERROR_FAILED
+        );
 
-        std::string &target_url {target["url"]};
+        std::string &target_url {static_cast<std::string&>(target["url"])};
         if (!cloned_repositories[target_url]) {
           if (!target.count("git-clone-args")) {
             target["git-clone-args"] = "";
@@ -250,8 +249,8 @@ voke::flags_t voke::cmd::sync::run() {
           VOKE_ASSERT(
             voke::platform::sync_git_repository(
               target_url,
-              host_library["cache-dir"],
-              target["git-clone-args"]
+              static_cast<std::string&>(host_library["cache-dir"]),
+              static_cast<std::string&>(target["git-clone-args"])
             ),
             voke::log() << "fatal: could not sync git '" << target_url << '\'',
             voke::result::ERROR_FAILED
@@ -260,26 +259,32 @@ voke::flags_t voke::cmd::sync::run() {
           cloned_repositories[target_url] =  true;
         }
 
-        VOKE_ASSERT(
-          voke::platform::compile(
-            host_library,
-            target
-          ),
-          ekg::log() << "fatal: could not compile target '" << static_cast<std::string>(target["path"]) << '\'',
-          voke::result::ERROR_FAILED
-        );
+        for (voke::compiler_t &compiler : voke::app.installed_compilers) {
+          if (
+            targets_argument != voke::argument::not_found
+            &&
+            std::find_if(
+              targets_argument.values.begin(),
+              targets_argument.values.end(),
+              [&](std::string &target_compiler) {
+                return target_compiler == static_cast<std::string&>(compiler["tag"]);
+              }
+            ) == targets_argument.values.end()
+          ) {
+            continue;
+          }
 
-        // @TODO: add post-build operations for this target
-        operations.clear();
-        VOKE_ASSERT(
-          voke::platform::voke_system_fetch_library_target_operations(
-            host_library,54
-            target,
-            operations
-          ),
-          ekg::log() << "error: could not obtain operations from target '" static_cast<std::string>(target["path"]) << '\'',
-          voke::result::ERROR_FAILED
-        );
+          VOKE_ASSERT(
+            voke::platform::voke_system_compile_host_library(
+              host_library,
+              target,
+              operations,
+              compiler
+            ),
+            voke::log() << "fatal: could not compile target '" << static_cast<std::string&>(target["path"]) << '\'',
+            voke::result::ERROR_FAILED
+          );
+        }
       }
 
       break;

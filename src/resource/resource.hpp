@@ -1,4 +1,5 @@
 #ifndef VOKE_RESOURCE_HPP
+
 #define VOKE_RESOURCE_HPP
 
 #include "argument/argument.hpp"
@@ -11,7 +12,7 @@
 #include <functional>
 
 namespace voke {
-  typedef voke::argument value_t;
+  typedef voke::argument_t value_t;
   typedef std::unordered_map<std::string, voke::value_t> compiler_t;
   typedef std::unordered_map<std::string, voke::value_t> library_t;
   typedef std::unordered_map<std::string, voke::value_t> target_t;
@@ -29,16 +30,15 @@ namespace voke {
   public:
     std::function<bool(t &resource)> predicate {};
     std::vector<t> &resources;
-  }
+  };
 }
 
 namespace voke::resource {
   template<typename t>
   voke::flags_t pack(
     voke::resource_pack_info_t &pack_info,
-    std::vector<t> &resources
+    t &resource
   ) {
-    t &resource {resources.emplace_back()};
     std::string prefix {};
     size_t underscores_pos {};
     std::unordered_map<std::string, size_t> repeated_fields {};
@@ -80,7 +80,7 @@ namespace voke::resource {
     std::string prefix {};
     std::unordered_map<std::string, size_t> repeated_fields {};
 
-    t resource { .type = pack_info.type };
+    t resource { {"type", pack_info.type} };
     for (size_t it {}; it < size; it++) {
       voke::argument_t &argument {
         pack_info.compiled_arguments.at(it)
@@ -93,7 +93,7 @@ namespace voke::resource {
   
       if (argument.line != line) {
         resources.push_back(resource);
-        resource = { .type = pack_info.type };
+        resource["type"] = pack_info.type;
         line = argument.line;
       }
   
@@ -130,14 +130,14 @@ namespace voke::resource {
         std::find_if(
           query_info.resources.begin(),
           query_info.resources.end(),
-          [resource, query_info.predicate](t &item) {
+          [&](t &item) {
             if (query_info.predicate(item)) {
               resource = item;
               return true;
             }
 
             return false;
-          },
+          }
         ) != query_info.resources.end()
       ) ?
       voke::result::ERROR_TIMEOUT
