@@ -33,7 +33,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
       compiler_info,
       args
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -48,7 +48,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
       pack_info,
       voke::app.installed_compilers
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -82,7 +82,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
       compiler_info,
       args
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -97,7 +97,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
       pack_info,
       voke::app.installed_libraries
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -133,7 +133,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target(
       compiler_info,
       args
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -148,7 +148,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target(
       pack_info,
       target
     ),
-    voke::empty,
+    /* empty */,
     voke::result::ERROR_FAILED
   );
 
@@ -189,7 +189,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
         compiler_info,
         pack_info.compiled_arguments
       ),
-      voke::empty,
+      /* empty */,
       voke::result::ERROR_FAILED
     );
 
@@ -198,7 +198,7 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
         pack_info,
         operations.emplace_back()
       ),
-      voke::empty,
+      /* empty */,
       voke::result::ERROR_FAILED
     );
   }
@@ -271,4 +271,5 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
   }
 
   voke::log() << "detail: building done";
+  return result;
 }
