@@ -4,12 +4,16 @@
 #include "io/log.hpp"
 
 bool voke::cmd::tweaks() {
-  voke::shell::verbose_level = (
-    voke::argument::find({"-el", "--extra-logs"})
-    ==
-    voke::argument::not_found ?
-    voke::verbose_level::LEVEL_ONE : voke::verbose_level::LEVEL_TWO
-  );
+  voke::argument_t &extra_logs_argument {voke::argument::find({"-el", "--extra-logs"})};
+  if (extra_logs_argument != voke::argument::not_found) {
+    uint8_t layer {static_cast<uint8_t>(std::stoi(static_cast<std::string&>(extra_logs_argument)))};
+    if (layer == 0 || layer > 3) {
+      voke::log() << "error: invalid extra logs layer, please try a number between 1 - 3";
+      return false;
+    }
+
+    voke::io_verbose_level = --layer;
+  }
 
   voke::log::debug = (
     voke::argument::find({"-d", "--debug"})

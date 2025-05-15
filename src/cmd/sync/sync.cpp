@@ -21,7 +21,7 @@ voke::flags_t voke::cmd::sync::assert() {
       {{"-b", "--binary"}, voke::empty, voke::behavior::OPTIONAL},
       {{"-t", "--targets"}, voke::not_empty, voke::behavior::OPTIONAL},
       {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
       {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
@@ -47,7 +47,7 @@ voke::flags_t voke::cmd::sync::assert() {
     .match_first = true,
     .expect = {
       {{"-sat", "--sync-all-targets"}, voke::empty, voke::behavior::MANDATORY},
-      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
       {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
       {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
@@ -68,7 +68,7 @@ voke::flags_t voke::cmd::sync::assert() {
     .match_first = true,
     .expect = {
       {{"-sal", "--sync-all-libraries"}, voke::empty, voke::behavior::MANDATORY},
-      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
       {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
       {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
@@ -87,7 +87,7 @@ voke::flags_t voke::cmd::sync::assert() {
 }
 
 voke::flags_t voke::cmd::sync::run() {
-  voke::log() << "detail: syncing voke-system repositories...";
+  //voke::log() << "detail: syncing voke-system repositories...";
 
   voke::platform_git_sync_repository_info git_sync_repository_info {
     .url = voke::vokegpu_repository_voke_repositories_url,

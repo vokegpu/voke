@@ -29,10 +29,8 @@ voke::flags_t voke::platform::voke_system_init() {
       // @TODO: add auto-fetch libraries (how)
     }
 
-    voke::shell::verbose_level = voke::verbose_level::LEVEL_TWO;
     size_t hash {std::hash<std::string>{}("home")};
-    voke::shell() << "echo $HOME > "<< hash;
-    voke::shell::verbose_level = voke::verbose_level::LEVEL_ONE;
+    voke::shell(true) << "echo $HOME > "<< hash;
 
     std::vector<std::string> lines {};
     voke::io::vokefile_read_lines(std::to_string(hash), lines);
@@ -59,7 +57,7 @@ voke::flags_t voke::platform::voke_system_init() {
 }
 
 voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
-  voke::log() << "detail: looking for installed compilers...";
+  voke::log(voke::verbose_level::LEVEL_TWO) << "detail: looking for installed compilers...";
 
   std::vector<std::string> lines {};
   VOKE_ASSERT(
@@ -108,12 +106,12 @@ voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
     voke::result::ERROR_FAILED
   );
 
-  voke::log() << "detail: checked " << voke::app.installed_compilers.size() << " compilers installed";
+  voke::log(voke::verbose_level::LEVEL_TWO) << "detail: checked " << voke::app.installed_compilers.size() << " compilers installed";
   return voke::result::SUCCESS;
 }
 
 voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
-  voke::log() << "detail: looking for installed libraries...";
+  voke::log(voke::verbose_level::LEVEL_TWO) << "detail: looking for installed libraries...";
 
   std::vector<std::string> lines {};
   voke::io::vokefile_read_lines(voke::system_installed_libraries_path, lines);
@@ -158,7 +156,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     voke::result::ERROR_FAILED
   );
 
-  voke::log() << "detail: checked " << voke::app.installed_libraries.size() << " libraries installed";
+  voke::log(voke::verbose_level::LEVEL_TWO) << "detail: checked " << voke::app.installed_libraries.size() << " libraries installed";
   return voke::result::SUCCESS;
 }
 
@@ -311,9 +309,7 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
     cmake_build_dir
   );
 
-  voke::shell::verbose_level = voke::verbose_level::LEVEL_TWO;
-
-  voke::shell()
+  voke::shell(true)
     << "cd "
     << cache_dir
     << " && "

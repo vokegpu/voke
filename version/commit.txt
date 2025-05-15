@@ -7,4 +7,5 @@
 -- Extra-logs option that make the verbose level as two.
 -- Interpret-based system for compiling arguments --- not C/C++ compilers ---.
 -- A small unique-purpose scripting language for explicit arguments, named voke, ends with `.voke`. 
--- Moved from `/opt` to local home user directory `~/./voke` allowing ask for sudo later.
+-- Moved from `/opt` to local home user directory `~/.voke` allowing ask for sudo later.
+-- Now `-el --extra-logs` require a number between 1-3 for allowing logs level.

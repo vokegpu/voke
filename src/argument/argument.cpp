@@ -335,6 +335,6 @@ voke::argument_t &voke::argument::find(
 }
 
 voke::flags_t voke::argument::throw_unknown_command_or_arguments() {
-  voke::log() << "warning: use --help or -h";
+  voke::log() << "error: unknown options use --help or -h";
   return voke::result::ERROR_UNKNOWN;
 }

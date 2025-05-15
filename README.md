@@ -63,7 +63,7 @@ When syncing a library, you can specify which compiler target you want.
 For example sync [SDL](https://www.libsdl.org/) with your [Clang-Mingw64](https://github.com/mstorsjo/llvm-mingw) on Windows:
 `voke -s libsdl2 -c clang-mingw64`.
 
-### Compilers
+### Compiler
 
 When using `voke`, there is a standard format to use, it is a cross-platform library manager, you need to specifiy which C/C++ target compiler you want to use.  
 For x86_64 compilers, tag suffix MUST be `64`, as example: `clang64` `clang-msvc64`. For x86 compilers, suffix MUST be `32`, as example: `clang32` `clang-msvc32`.  
