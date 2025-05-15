@@ -229,7 +229,7 @@ voke::flags_t voke::cmd::sync::run() {
       );
 
       voke::argument_t &binary_argument {voke::argument::find({"-b", "--binary"})};
-      if (binary_argument ==  voke::argument::not_found) {
+      if (binary_argument != voke::argument::not_found) {
         // @TODO: add binary option instead compile
         break;
       }
@@ -258,9 +258,12 @@ voke::flags_t voke::cmd::sync::run() {
 
           git_sync_repository_info = {
             .url = target_url,
-            .path = static_cast<std::string&>(host_library["cache-dir"]),
-            .clone_args = static_cast<std::string&>(target["git-clone-args"])
+            .path = static_cast<std::string&>(host_library["cache-dir"])
           };
+
+          if (!target["git-clone-args"].values.empty()) {
+            git_sync_repository_info.clone_args = static_cast<std::string&>(target["git-clone-args"]);
+          }
 
           VOKE_ASSERT(
             voke::platform::sync_git_repository(

@@ -103,6 +103,10 @@ voke::flags_t voke::argument::compile(
 ) {
   voke::flags_t result {voke::result::SUCCESS};
 
+  for (voke::compiler_t &compilers : voke::app.installed_compilers) {
+    voke::log() << static_cast<std::string&>(compilers["tag"]);
+  }
+
   if (!compiler_info.lines.empty()) {
     size_t size {};
     size_t line_count {1};
@@ -110,6 +114,7 @@ voke::flags_t voke::argument::compile(
     std::vector<voke::argument_t> parsed_args {};
     voke::argument_parser_info_t parser_info {};
 
+    bool found_prefix {};
     bool found {};
     bool first_matched {};
     size_t previous_line {};
@@ -147,8 +152,12 @@ voke::flags_t voke::argument::compile(
             continue;
           }
 
+          found_prefix = false;
           for (std::string &prefix : assembly.prefixes) {
-            assembly.was_found += (prefix == argument.prefix);
+            if (prefix == argument.prefix) {
+              found_prefix = true;
+              assembly.was_found++;
+            }
           }
 
           if (!compiler_info.allow_repeated_arguments && compiler_info.match_first && assembly.was_found != 1 && it == 0 && !first_matched) {
@@ -164,7 +173,7 @@ voke::flags_t voke::argument::compile(
             continue;
           }
 
-          if (assembly.was_found == 0) {
+          if (!found_prefix) {
             continue;
           }
 

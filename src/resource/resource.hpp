@@ -52,7 +52,7 @@ namespace voke::resource {
 
       prefix = argument.prefix;
       if ((underscores_pos = prefix.find("--")) != std::string::npos) {
-        prefix.erase(prefix.begin(), prefix.begin() + underscores_pos);
+        prefix.erase(prefix.begin() + underscores_pos, prefix.begin() + 2);
       }
 
       if (resource.count(prefix)) {
@@ -95,11 +95,12 @@ namespace voke::resource {
         resources.push_back(resource);
         resource["type"] = pack_info.type;
         line = argument.line;
+        resource = {};
       }
-  
+
       prefix = argument.prefix;
       if ((underscores_pos = prefix.find("--")) != std::string::npos) {
-        prefix.erase(prefix.begin(), prefix.begin() + underscores_pos);
+        prefix.erase(prefix.begin() + underscores_pos, prefix.begin() + 2);
       }
 
       if (resource.count(prefix)) {
