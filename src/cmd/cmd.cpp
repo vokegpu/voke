@@ -8,7 +8,7 @@ bool voke::cmd::tweaks() {
   if (extra_logs_argument != voke::argument::not_found) {
     uint8_t layer {static_cast<uint8_t>(std::stoi(static_cast<std::string&>(extra_logs_argument)))};
     if (layer == 0 || layer > 3) {
-      voke::log() << "error: invalid extra logs layer, please try a number between 1 - 3";
+      voke::log() << "error: invalid extra logs level, please try a number between 1 - 3";
       return false;
     }
 

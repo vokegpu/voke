@@ -103,10 +103,6 @@ voke::flags_t voke::argument::compile(
 ) {
   voke::flags_t result {voke::result::SUCCESS};
 
-  for (voke::compiler_t &compilers : voke::app.installed_compilers) {
-    voke::log() << static_cast<std::string&>(compilers["tag"]);
-  }
-
   if (!compiler_info.lines.empty()) {
     size_t size {};
     size_t line_count {1};
