@@ -18,8 +18,9 @@ namespace voke {
     static voke::shell_result_t result;
   protected:
     std::ostringstream raw {};
-  public:
-    ~shell() {
+    bool already_sent {};
+  protected:
+    void send() {
       voke::shell_result_t result {};
       switch (voke::shell::verbose_level) {
       case voke::verbose_level::LEVEL_ONE:
@@ -34,6 +35,13 @@ namespace voke {
       }
 
       voke::shell::result = std::system(this->raw.str().c_str());
+      this->already_sent = true;
+    }
+  public:
+    ~shell() {
+      if (!this->already_sent) {
+        this->send();
+      }
     }
 
     template<typename t>
@@ -44,11 +52,19 @@ namespace voke {
   public:
     template<typename t>
     bool operator == (t result) {
+      if (!this->already_sent) {
+        this->send();
+      }
+
       return voke::shell::result == result;
     }
 
     template<typename t>
     bool operator != (t result) {
+      if (!this->already_sent) {
+        this->send();
+      }
+
       return voke::shell::result != result;
     }
   };

@@ -6,16 +6,71 @@
 
 #include <iostream>
 #include <filesystem>
+#include <functional>
+
+std::string voke::system_dir_path {};
+std::string voke::system_installed_compilers_path {};
+std::string voke::system_installed_libraries_path {};
+std::string voke::system_cached_repositories_dir_path {};
+
+voke::flags_t voke::platform::voke_system_init() {
+  std::string home {};
+
+  #if defined(_WIN32) || defined(_WIN64)
+    // add windows path
+  #elif defined(__linux__)
+    voke::shell() << "cd ~/.voke";
+    if (voke::shell::result != 0) {
+      voke::shell() << "mkdir -p .voke/cache";
+      voke::shell() << "touch " << voke::system_installed_compilers_path;
+      voke::shell() << "touch " << voke::system_installed_libraries_path;
+
+      // @TODO: add auto-fetch targets
+      // @TODO: add auto-fetch libraries (how)
+    }
+
+    voke::shell::verbose_level = voke::verbose_level::LEVEL_TWO;
+    size_t hash {std::hash<std::string>{}("home")};
+    voke::shell() << "echo $HOME > "<< hash;
+    voke::shell::verbose_level = voke::verbose_level::LEVEL_ONE;
+
+    std::vector<std::string> lines {};
+    voke::io::vokefile_read_lines(std::to_string(hash), lines);
+    voke::shell() << "rm " << hash;
+
+    if (lines.empty()) {
+      return voke::result::ERROR_FAILED;
+    }
+
+    voke::system_dir_path = lines.at(0);
+    voke::system_dir_path += "/.voke/system/";
+
+    voke::system_cached_repositories_dir_path = lines.at(0);
+    voke::system_cached_repositories_dir_path += "/.voke/cache/";
+
+    voke::system_installed_compilers_path = lines.at(0);
+    voke::system_installed_compilers_path += "/.voke/installed-compilers.voke";
+
+    voke::system_installed_libraries_path = lines.at(0);
+    voke::system_installed_libraries_path += "/.voke/installed-libraries.voke";
+  #endif
+
+  return voke::result::SUCCESS;
+}
 
 voke::flags_t voke::platform::voke_system_fetch_installed_compilers() {
   voke::log() << "detail: looking for installed compilers...";
 
   std::vector<std::string> lines {};
-  voke::io::vokefile_read_lines(voke::system_installed_compilers_path, lines);
+  VOKE_ASSERT(
+    voke::io::vokefile_read_lines(voke::system_installed_compilers_path, lines),
+    voke::log() << "fatal: could not read '" << voke::system_installed_compilers_path << '\'',
+    voke::result::ERROR_FAILED
+  );
 
   voke::argument_compiler_info_t compiler_info {
     .tag = "installed-compilers.voke",
-    .lines = lines, 
+    .lines = lines,
     .expect = {
       {{"--tag"}, 1, voke::behavior::MANDATORY},
       {{"--binary-dir"}, 1, voke::behavior::MANDATORY},
@@ -101,7 +156,7 @@ voke::flags_t voke::platform::voke_system_fetch_installed_libraries() {
     voke::result::ERROR_FAILED
   );
 
-  voke::log() << "detail: checked " << voke::app.installed_compilers.size() << " libraries installed";
+  voke::log() << "detail: checked " << voke::app.installed_libraries.size() << " libraries installed";
   return voke::result::SUCCESS;
 }
 
@@ -112,11 +167,21 @@ voke::flags_t voke::platform::voke_system_fetch_library_target(
   voke::log() << "detail: fetching library target...";
 
   std::vector<std::string> lines {};
-  voke::io::vokefile_read_lines(library["path"], lines);
+  voke::io::vokefile_read_lines(target["path"], lines);
+
+  std::string compacted_line {};
+  for (std::string &line : lines) {
+    compacted_line += line;
+    compacted_line += ' ';
+  }
+
+  lines.clear();
+  lines.emplace_back() = compacted_line;
 
   voke::argument_compiler_info_t compiler_info {
     .tag = static_cast<std::string&>(library["tag"]),
     .lines = lines,
+    .allow_repeated_arguments = true,
     .expect = {
       {{"--tag"}, voke::not_empty, voke::behavior::MANDATORY},
       {{"--build-system"}, voke::not_empty, voke::behavior::MANDATORY},

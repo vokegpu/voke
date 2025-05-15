@@ -7,29 +7,33 @@
 #include <string>
 
 voke::flags_t voke::platform::sync_git_repository(
-  std::string url,
-  std::string path_to_clone,
-  std::string clone_args
+  voke::platform_git_sync_repository_info &sync_git_repository_info
 ) {
-  voke::shell() << "cd " << path_to_clone;
+  voke::shell() << "cd " << sync_git_repository_info.path;
   if (voke::shell::result != 0) {
-    voke::shell() 
+    voke::shell()
       << "git clone "
-      << url
+      << sync_git_repository_info.url
       << ' '
-      << clone_args
+      << sync_git_repository_info.clone_args
       << ' '
-      << path_to_clone;
+      << sync_git_repository_info.path;
   }
 
   if (voke::shell::result) {
-    voke::log::error = url;
+    voke::log::error = sync_git_repository_info.url;
     return voke::result::ERROR_FAILED;
+  }
+
+  if (sync_git_repository_info.enable_safe_directory) {
+    voke::shell()
+      << "git config --global --add safe.directory "
+      << sync_git_repository_info.path;
   }
 
   voke::shell()
     << "cd "
-    << path_to_clone
+    << sync_git_repository_info.path
     << " && git pull";
 
   return (

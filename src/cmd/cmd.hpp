@@ -10,6 +10,8 @@ namespace voke {
 }
 
 namespace voke::cmd {
+  bool tweaks();
+
   void add(
     voke::command_t command,
     voke::command_t run

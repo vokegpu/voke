@@ -20,7 +20,6 @@ namespace voke {
     size_t size {};
     voke::flags_t behavior {};
     size_t was_found {};
-    bool was_compiled {};
   };
 
   struct argument_compiler_info_t {
@@ -28,13 +27,13 @@ namespace voke {
     std::string tag {};
     std::vector<std::string> lines {};
     bool match_first {};
+    bool allow_repeated_arguments {};
     std::vector<assembly_t> expect {};
   };
 
   struct argument_parser_info_t {
   public:
     std::vector<std::string> args {};
-    bool serialize_quote {};
   };
 
   struct argument_t {

@@ -42,8 +42,8 @@ namespace voke::io {
 
   void replace(
     std::string &str_to_replace,
-    std::string to_replace,
-    std::string replace
+    const std::string &to_replace,
+    const std::string &replace
   );
 
   template<typename t>

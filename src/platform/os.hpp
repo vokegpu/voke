@@ -8,20 +8,18 @@
 #include <string>
 
 namespace voke {
-  #if defined(_WIN32) || defined(_WIN64)
-    // add windows path
-  #elif defined(__linux__)
-    const static std::string system_dir_path {"/opt/vokegpu/voke"};
-    const static std::string system_installed_compilers_path {"/opt/vokegpu/voke/installed-compilers.voke"};
-    const static std::string system_installed_libraries_path {"/opt/vokegpu/voke/installed-libraries.voke"};
-    const static std::string system_cached_repositories_dir_path {"/opt/vokegpu/voke/.repositories/"};
-  #endif
+  extern std::string system_dir_path;
+  extern std::string system_installed_compilers_path;
+  extern std::string system_installed_libraries_path;
+  extern std::string system_cached_repositories_dir_path;
 
   const static std::string local {"local"};
   const static std::string host {"host"};
 }
 
 namespace voke::platform {
+  voke::flags_t voke_system_init();
+
   voke::flags_t voke_system_fetch_installed_compilers();
   voke::flags_t voke_system_fetch_installed_libraries();
 

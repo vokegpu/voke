@@ -19,9 +19,10 @@ voke::flags_t voke::cmd::sync::assert() {
       {{"-s", "--sync"}, 1, voke::behavior::MANDATORY},
       {{"-v", "--version"}, 1, voke::behavior::OPTIONAL},
       {{"-b", "--binary"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-t", "--targets"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-t", "--targets"}, voke::not_empty, voke::behavior::OPTIONAL},
       {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -47,7 +48,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .expect = {
       {{"-sat", "--sync-all-targets"}, voke::empty, voke::behavior::MANDATORY},
       {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -67,7 +69,8 @@ voke::flags_t voke::cmd::sync::assert() {
     .expect = {
       {{"-sal", "--sync-all-libraries"}, voke::empty, voke::behavior::MANDATORY},
       {{"-el", "--extra-logs"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
+      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -86,10 +89,15 @@ voke::flags_t voke::cmd::sync::assert() {
 voke::flags_t voke::cmd::sync::run() {
   voke::log() << "detail: syncing voke-system repositories...";
 
+  voke::platform_git_sync_repository_info git_sync_repository_info {
+    .url = voke::vokegpu_repository_voke_repositories_url,
+    .path = voke::system_dir_path,
+    .enable_safe_directory = true
+  };
+
   VOKE_ASSERT(
     voke::platform::sync_git_repository(
-      voke::vokegpu_repository_voke_repositories_url,
-      voke::system_dir_path
+      git_sync_repository_info
     ),
     voke::log() << "error: could not sync voke-system repositories, use -el or --extra-logs",
     voke::result::ERROR_FAILED
@@ -166,6 +174,8 @@ voke::flags_t voke::cmd::sync::run() {
         voke::target_t &target {
           compiler_targets.emplace_back()
         };
+
+        target["path"] = vokefiles_path;
 
         VOKE_ASSERT(
           voke::platform::voke_system_fetch_library_target(
@@ -246,11 +256,15 @@ voke::flags_t voke::cmd::sync::run() {
             target["git-clone-args"] = "";
           }
 
+          git_sync_repository_info = {
+            .url = target_url,
+            .path = static_cast<std::string&>(host_library["cache-dir"]),
+            .clone_args = static_cast<std::string&>(target["git-clone-args"])
+          };
+
           VOKE_ASSERT(
             voke::platform::sync_git_repository(
-              target_url,
-              static_cast<std::string&>(host_library["cache-dir"]),
-              static_cast<std::string&>(target["git-clone-args"])
+              git_sync_repository_info
             ),
             voke::log() << "fatal: could not sync git '" << target_url << '\'',
             voke::result::ERROR_FAILED

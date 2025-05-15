@@ -3,6 +3,7 @@
 #include "voke.hpp"
 #include "platform/git.hpp"
 #include "io/shell.hpp"
+#include "platform/os.hpp"
 
 #include <iostream>
 
@@ -14,8 +15,20 @@ int32_t main(int32_t args_size, char **pp_args) {
 
   std::string raw {};
   for (std::string &raw_arg : voke::app.raw_args) {
-    raw += raw_arg;
-    raw += ' ';
+    if (raw_arg.find(" ") != std::string::npos) {
+      if (raw_arg.find("\"") != std::string::npos) {
+        raw += '\'';
+        raw += raw_arg;
+        raw += "' ";
+      } else {
+        raw += '"';
+        raw += raw_arg;
+        raw += "\" ";
+      }
+    } else {
+      raw += raw_arg;
+      raw += ' ';
+    }
   }
 
   voke::app.raw_args.clear();
@@ -24,6 +37,11 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::shell() << "git --version";
   if (voke::shell::result != 0) {
     voke::log() << "fatal: command 'git' not found";
+    return voke::log::flush();
+  }
+
+  if (voke::platform::voke_system_init() != voke::result::SUCCESS) {
+    voke::log() << "fatal: could not initialize voke-system";
     return voke::log::flush();
   }
 

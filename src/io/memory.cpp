@@ -38,8 +38,8 @@ void voke::io::cut_end_of_url(
 
 void voke::io::replace(
   std::string &str_to_replace,
-  std::string to_replace,
-  std::string replace
+  const std::string &to_replace,
+  const std::string &replace
 ) {
   str_to_replace = std::regex_replace(str_to_replace, std::regex(to_replace), replace);
 }

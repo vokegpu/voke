@@ -15,9 +15,18 @@ voke::flags_t voke::io::vokefile_read_lines(
   if (file.is_open()) {
     result = voke::result::SUCCESS;
     std::string line {};
+    size_t pos {};
     while (getline(file, line)) {
       if (line.empty()) {
         continue;
+      }
+
+      if ((pos = line.rfind("\n")) != std::string::npos) {
+        line.erase(line.begin() + pos);
+      }
+
+      if ((pos = line.rfind("\r")) != std::string::npos) {
+        line.erase(line.begin() + pos);
       }
 
       lines.push_back(line);

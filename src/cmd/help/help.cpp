@@ -24,45 +24,26 @@ voke::flags_t voke::cmd::help::assert() {
 
 voke::flags_t voke::cmd::help::run() {
   std::string help {
-R"(🐈‍⬛
-sync a C/C++ library or compiler:
-  voke |-s *
-       |--sync *
-       optional --- version to look-up:
-         | -v *         
-         | --version *
-       optional --- pre-compiled binary:
-         | -b
-         | --binary
-       optional --- specify compilers to sync the library:
-         | -t
-         | --targets
-       optional --- force sync (re-installing):
-         | -f
-         | --force
-
-remove a C/C++ library or compiler from the system:
-  voke | -r *
-       | --remove *
-
-sync all C/C++ compilers/libraries installed under system:
-  voke | -sac                  
-       | --sync-all-compilers
-       | -sal                  
-       | --sync-all-libraries
-
-output software version:
-  voke | -v                    
-       | --version
-
-optional --- expose shell commands outputs:
- voke | -el
-      | --extra-logs
-
-for more development info visit:
-| - | https://github.com/vokegpu/voke
-| - | https://github.com/vokegpu/voke-docs)"
-  };
+R"(template:
+  voke [command] <values> [options]
+   | [option]
+   | [option] <values>
+commands:
+  voke [-s --sync] <library/compiler>
+   | [-v --version] <version> 
+   | [-b --binary]
+   | [-t --targets] <compilers> 
+   | [-f --force] 
+   | [-el --extra-logs]
+   | [-d --debug]
+  voke [-r --remove] <library/compiler>
+   | [-t --targets] <compilers>
+   | [-el --extra-logs]
+  voke [-sat --sync-all-targets]
+   | [-el --extra-logs]
+  voke [-sal --sync-all-libraries]
+   | [-el --extra-logs]
+  voke [-v --version])"};
 
   voke::log() << help;
   return voke::result::SUCCESS;

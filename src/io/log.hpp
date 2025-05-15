@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <sstream>
 
+#define VOKE_LOG_DEBUG
+
 namespace voke {
   class log {
   public:
@@ -12,6 +14,7 @@ namespace voke {
     static bool buffered;
     static std::string error;
     static int32_t status;
+    static bool debug;
   public:
     static int32_t flush() {
       if (voke::log::buffered) {
@@ -39,6 +42,11 @@ namespace voke {
 
     ~log() {
       voke::log::buffer << '\n';
+
+      if (voke::log::debug) {
+        std::cout << voke::log::buffer.str();
+        voke::log::buffer = {};
+      }
     }
 
     template<typename t>
