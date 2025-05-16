@@ -29,12 +29,17 @@ voke::flags_t voke::platform::voke_system_init() {
       // @TODO: add auto-fetch libraries (how)
     }
 
+    std::string command_builder {"echo $HOME > "};
     size_t hash {std::hash<std::string>{}("home")};
-    voke::shell(true) << "echo $HOME > "<< hash;
+    command_builder += std::to_string(hash);
+    std::system(command_builder.c_str());
 
     std::vector<std::string> lines {};
     voke::io::vokefile_read_lines(std::to_string(hash), lines);
-    voke::shell() << "rm " << hash;
+
+    command_builder = "rm ";
+    command_builder += std::to_string(hash);
+    std::system(command_builder.c_str());
 
     if (lines.empty()) {
       return voke::result::ERROR_FAILED;
@@ -309,25 +314,26 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
     cmake_build_dir
   );
 
+  voke::log() << '\n';
+
   voke::shell(true)
     << "cd "
     << cache_dir
     << " && "
     << run;
 
-  voke::flags_t result {
-    voke::shell::result
-    ==
-    0
-    ? voke::result::SUCCESS : voke::result::ERROR_FAILED
-  };
+  voke::log() << '\n';
+
+  VOKE_ASSERT(
+    voke::shell::result,
+    voke::log() << "error: could not build library",
+    voke::result::ERROR_FAILED
+  );
 
   if (
-    result == voke::result::SUCCESS
-    &&
     !cache_dir.empty()
     &&
-    static_cast<std::string&>(library["build_system"]) == "cmake"
+    static_cast<std::string&>(target["build-system"]) == "cmake"
     &&
     false
   ) {
@@ -338,5 +344,5 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
   }
 
   voke::log() << "detail: building done";
-  return result;
+  return voke::result::SUCCESS;
 }

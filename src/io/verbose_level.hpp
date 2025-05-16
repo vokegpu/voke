@@ -7,7 +7,8 @@ namespace voke {
   enum class verbose_level : uint8_t {
     LEVEL_ONE,
     LEVEL_TWO,
-    LEVEL_THREE
+    LEVEL_THREE,
+    LEVEL_FOUR
   };
 
   extern uint8_t io_verbose_level;

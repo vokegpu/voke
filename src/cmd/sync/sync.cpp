@@ -21,8 +21,7 @@ voke::flags_t voke::cmd::sync::assert() {
       {{"-b", "--binary"}, voke::empty, voke::behavior::OPTIONAL},
       {{"-t", "--targets"}, voke::not_empty, voke::behavior::OPTIONAL},
       {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
-      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL}
     }
   };
 
@@ -48,8 +47,7 @@ voke::flags_t voke::cmd::sync::assert() {
     .expect = {
       {{"-sat", "--sync-all-targets"}, voke::empty, voke::behavior::MANDATORY},
       {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
-      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -69,8 +67,7 @@ voke::flags_t voke::cmd::sync::assert() {
     .expect = {
       {{"-sal", "--sync-all-libraries"}, voke::empty, voke::behavior::MANDATORY},
       {{"-el", "--extra-logs"}, 1, voke::behavior::OPTIONAL},
-      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL},
-      {{"-d", "--debug"}, voke::empty, voke::behavior::OPTIONAL}
+      {{"-f", "--force"}, voke::empty, voke::behavior::OPTIONAL}
     }
   };
 
@@ -131,6 +128,8 @@ voke::flags_t voke::cmd::sync::run() {
         voke::log() << "error: could not find library named '" << sync_tag << '\'',
         voke::result::ERROR_FAILED
       );
+
+      voke::log() << "detail: found library named '" << sync_tag << '\'';
 
       voke::argument_t &targets_argument {voke::argument::find({"-t", "--targets"})};
       std::string not_found_target {};
@@ -291,15 +290,16 @@ voke::flags_t voke::cmd::sync::run() {
             continue;
           }
 
-          VOKE_ASSERT(
+          voke::log() << "detail: compiling for target '" << static_cast<std::string&>(compiler["tag"]) << "'...";
+
+          VOKE_ASSERT_IGNORE(
             voke::platform::voke_system_compile_host_library(
               host_library,
               target,
               operations,
               compiler
             ),
-            voke::log() << "fatal: could not compile target '" << static_cast<std::string&>(target["path"]) << '\'',
-            voke::result::ERROR_FAILED
+            voke::log() << "error: could not compile target '" << static_cast<std::string&>(target["path"]) << "' skipping..."
           );
         }
       }

@@ -37,12 +37,12 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::shell() << "git --version";
   if (voke::shell::result != 0) {
     voke::log() << "fatal: command 'git' not found";
-    return voke::log::flush();
+    return voke::log::status;
   }
 
   if (voke::platform::voke_system_init() != voke::result::SUCCESS) {
     voke::log() << "fatal: could not initialize voke-system";
-    return voke::log::flush();
+    return voke::log::status;
   }
 
   voke::cmd::add(
@@ -64,5 +64,5 @@ int32_t main(int32_t args_size, char **pp_args) {
     voke::argument::throw_unknown_command_or_arguments();
   }
 
-  return voke::log::flush();
+  return voke::log::status;
 }
