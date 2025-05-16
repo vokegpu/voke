@@ -61,9 +61,9 @@ namespace voke::resource {
         } else {
           prefix += std::to_string((repeated_fields[prefix] = 2));
         }
-      } else {
-        resource[prefix] = argument;
       }
+
+      resource[prefix] = argument;
     }
 
     return voke::result::SUCCESS;
@@ -109,9 +109,9 @@ namespace voke::resource {
         } else {
           prefix += std::to_string((repeated_fields[prefix] = 2));
         }
-      } else {
-        resource[prefix] = argument;
       }
+
+      resource[prefix] = argument;
 
       if (it == size - 1) {
         resources.push_back(resource);

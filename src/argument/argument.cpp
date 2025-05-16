@@ -103,10 +103,10 @@ voke::flags_t voke::argument::compile(
 ) {
   voke::flags_t result {voke::result::SUCCESS};
 
-  if (!compiler_info.lines.empty()) {
-    size_t size {};
-    size_t line_count {1};
+  size_t size {};
+  size_t line_count {1};
 
+  if (!compiler_info.lines.empty()) {
     std::vector<voke::argument_t> parsed_args {};
     voke::argument_parser_info_t parser_info {};
 
@@ -245,40 +245,42 @@ voke::flags_t voke::argument::compile(
 
       line_count++;
     }
-
-    std::string prefixes {};
-    bool first_match {true};
-    bool is_mandatory {};
-
-    for (voke::assembly_t &assembly : compiler_info.expect) {
-      is_mandatory = voke::io::has(assembly.behavior, voke::behavior::MANDATORY);
-      if (!is_mandatory || (is_mandatory && assembly.was_found)) {
-        first_match = false;        
-        continue;
-      }
-
-      result = voke::result::ERROR_FAILED;
-      if (first_match && compiler_info.match_first) {
-        break;
-      }
-
-      prefixes.clear();
-      size = assembly.prefixes.size();
-
-      for (size_t it {}; it < size; it++) {
-        prefixes += assembly.prefixes.at(it);
-
-        if (it < size - 1) {
-          prefixes += " | ";
-        }
-      }
-
-      voke::log() 
-        << "error: '" << compiler_info.tag << "' expected argument '" << prefixes << '\'';
-    }
+  } else {
+    result = voke::result::ERROR_FAILED;
   }
 
-  return result; 
+  std::string prefixes {};
+  bool first_match {true};
+  bool is_mandatory {};
+
+  for (voke::assembly_t &assembly : compiler_info.expect) {
+    is_mandatory = voke::io::has(assembly.behavior, voke::behavior::MANDATORY);
+    if (!is_mandatory || (is_mandatory && assembly.was_found)) {
+      first_match = false;        
+      continue;
+    }
+
+    result = voke::result::ERROR_FAILED;
+    if (first_match && compiler_info.match_first) {
+      break;
+    }
+
+    prefixes.clear();
+    size = assembly.prefixes.size();
+
+    for (size_t it {}; it < size; it++) {
+      prefixes += assembly.prefixes.at(it);
+
+      if (it < size - 1) {
+        prefixes += " | ";
+      }
+    }
+
+    voke::log() 
+      << "error: '" << compiler_info.tag << "' expected argument '" << prefixes << '\'';
+  }
+
+  return result;
 }
 
 voke::flags_t voke::argument::any(

@@ -50,6 +50,8 @@ namespace voke::io {
   constexpr bool has(voke::flags_t bits, t bit) {
     return (bits & bit) == bit;
   }
+
+  voke::flags_t copy(const std::string &src, const std::string &dir);
 }
 
 #endif

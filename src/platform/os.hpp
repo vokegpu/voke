@@ -38,7 +38,8 @@ namespace voke::platform {
     voke::library_t &library,
     voke::target_t &target,
     std::vector<voke::operation_t> &operations,
-    voke::compiler_t &compiler
+    voke::compiler_t &compiler,
+    std::vector<voke::library_t> &new_installed_local_libraries
   );
 }
 

@@ -17,7 +17,7 @@ voke::flags_t voke::platform::voke_system_init() {
   std::string home {};
 
   #if defined(_WIN32) || defined(_WIN64)
-    // add windows path
+    // @TODO: windows
   #elif defined(__linux__)
     voke::shell() << "cd ~/.voke";
     if (voke::shell::result != 0) {
@@ -245,11 +245,13 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
     }
   };
 
+  compiler_info.lines.resize(1);
   for (auto &[key, value] : target) {
-    if (key.find("operations") == std::string::npos) {
+    if (key.find("operation") == std::string::npos) {
       continue;
     }
 
+    compiler_info.lines.at(0) = static_cast<std::string&>(value);
     pack_info.compiled_arguments.clear();
     VOKE_ASSERT(
       voke::argument::compile(
@@ -260,12 +262,20 @@ voke::flags_t voke::platform::voke_system_fetch_library_target_operations(
       voke::result::ERROR_FAILED
     );
 
+    voke::operation_t &operation {operations.emplace_back()};
     VOKE_ASSERT(
       voke::resource::pack<voke::operation_t>(
         pack_info,
-        operations.emplace_back()
+        operation
       ),
       /* empty */,
+      voke::result::ERROR_FAILED
+    );
+
+    std::string &operation_type {static_cast<std::string&>(operation["type"])};
+    VOKE_ASSERT(
+      operation_type != "binary" && operation_type != "include",
+      voke::log() << "fatal: operation type must be 'binary' or 'include', invalid value '" << operation_type << '\'',
       voke::result::ERROR_FAILED
     );
   }
@@ -277,7 +287,8 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
   voke::library_t &library,
   voke::target_t &target,
   std::vector<voke::operation_t> &operations,
-  voke::compiler_t &compiler
+  voke::compiler_t &compiler,
+  std::vector<voke::library_t> &new_installed_local_libraries
 ) {
   voke::log() << "detail: building library '" << static_cast<std::string&>(library["tag"]) << "'...";
 
@@ -314,15 +325,19 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
     cmake_build_dir
   );
 
-  voke::log() << '\n';
+  cmake_build_dir = cache_dir;
+  cmake_build_dir = "/cmake-install";
+  voke::io::replace(
+    run,
+    "\\$\\{cmake-install-dir\\}",
+    cmake_build_dir
+  );
 
   voke::shell(true)
     << "cd "
     << cache_dir
     << " && "
     << run;
-
-  voke::log() << '\n';
 
   VOKE_ASSERT(
     voke::shell::result,
@@ -344,5 +359,45 @@ voke::flags_t voke::platform::voke_system_compile_host_library(
   }
 
   voke::log() << "detail: building done";
+  voke::log() << "detail: executing post-build operations...";
+
+  // --tag libekg --version "2.0.0" --target clang64 --binaries /usr/lib64/libekg.a --includes /usr/include/ekg
+  // new_installed_local_libraries
+
+  std::string &compiler_tag {static_cast<std::string&>(compiler["tag"])};
+  for (voke::operation_t &operation : operations) {
+    std::string &tag {static_cast<std::string&>(operation["tag"])};
+
+    if (!operation["targets"].values.empty()) {
+      voke::value_t &value_targets {
+        operation["targets"]
+      };
+
+      if (
+        std::find_if(
+          value_targets.values.begin(),
+          value_targets.values.end(),
+          [&](std::string &target) {
+            return compiler_tag == target;
+          }
+        ) == value_targets.values.end()
+      ) {
+        continue;
+      }
+    }
+
+    std::string &type {static_cast<std::string&>(operation["type"])};
+    std::string &files {static_cast<std::string&>(operation["files"])};
+
+    voke::log(voke::verbose_level::LEVEL_TWO)
+      << "detail: doing operation for target '" << compiler_tag << '\'';
+
+    if (type == "binary") {
+
+    } else if (type == "include") {
+      //
+    }
+  }
+
   return voke::result::SUCCESS;
 }
