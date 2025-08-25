@@ -25,5 +25,12 @@ voke::flags_t voke::cmd::test::assert() {
 voke::flags_t voke::cmd::test::run() {
   voke::log() << "testig stuff...";
 
+  std::string_view hw {
+    R"(
+    tag: str = "meow";
+    number: i32 = "meow";
+    )"
+  };
+
   return voke::result::SUCCESS;
 }
