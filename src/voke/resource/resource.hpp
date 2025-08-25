@@ -2,8 +2,8 @@
 
 #define VOKE_RESOURCE_HPP
 
-#include "argument/argument.hpp"
-#include "io/log.hpp"
+#include "voke/argument/argument.hpp"
+#include "voke/io/log.hpp"
 
 #include <vector>
 #include <unordered_map>

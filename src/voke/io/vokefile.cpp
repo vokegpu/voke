@@ -1,5 +1,5 @@
 #include "vokefile.hpp"
-#include "io/log.hpp"
+#include "voke/io/log.hpp"
 
 #include <fstream>
 #include <iostream>

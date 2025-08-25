@@ -1,7 +1,7 @@
 #include "git.hpp"
-#include "io/log.hpp"
-#include "io/shell.hpp"
-#include "platform/os.hpp"
+#include "voke/io/log.hpp"
+#include "voke/io/shell.hpp"
+#include "voke/platform/os.hpp"
 
 #include <iostream>
 #include <string>

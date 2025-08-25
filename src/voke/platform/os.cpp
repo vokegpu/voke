@@ -1,8 +1,8 @@
 #include "os.hpp"
-#include "io/log.hpp"
-#include "io/shell.hpp"
-#include "voke.hpp"
-#include "io/vokefile.hpp"
+#include "voke/io/log.hpp"
+#include "voke/io/shell.hpp"
+#include "voke/voke.hpp"
+#include "voke/io/vokefile.hpp"
 
 #include <iostream>
 #include <filesystem>

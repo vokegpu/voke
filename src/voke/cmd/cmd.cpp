@@ -1,7 +1,7 @@
 #include "cmd.hpp"
-#include "voke.hpp"
-#include "io/shell.hpp"
-#include "io/log.hpp"
+#include "voke/voke.hpp"
+#include "voke/io/shell.hpp"
+#include "voke/io/log.hpp"
 
 bool voke::cmd::tweaks() {
   voke::argument_t &extra_logs_argument {voke::argument::find({"-el", "--extra-logs"})};

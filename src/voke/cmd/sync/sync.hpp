@@ -1,7 +1,7 @@
 #ifndef VOKE_CMD_SYNC_HPP
 #define VOKE_CMD_SYNC_HPP
 
-#include "io/memory.hpp"
+#include "voke/io/memory.hpp"
 
 #include <vector>
 #include <string>

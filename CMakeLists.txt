@@ -10,7 +10,7 @@ project(
 )
 
 include(cmake/specification.cmake)
-
+  
 message(STATUS "Voke building on ${PLATFORM}...")
 
 file(

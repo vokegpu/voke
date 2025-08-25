@@ -1,11 +1,11 @@
 #include "sync.hpp"
-#include "voke.hpp"
-#include "io/log.hpp"
-#include "io/shell.hpp"
-#include "platform/git.hpp"
-#include "platform/os.hpp"
-#include "resource/resource.hpp"
-#include "io/vokefile.hpp"
+#include "voke/voke.hpp"
+#include "voke/io/log.hpp"
+#include "voke/io/shell.hpp"
+#include "voke/platform/git.hpp"
+#include "voke/platform/os.hpp"
+#include "voke/resource/resource.hpp"
+#include "voke/io/vokefile.hpp"
 #include <iostream>
 
 voke::cmd_sync_mode voke::cmd::sync::mode {};
@@ -292,12 +292,15 @@ voke::flags_t voke::cmd::sync::run() {
 
           voke::log() << "detail: compiling for target '" << static_cast<std::string&>(compiler["tag"]) << "'...";
 
+          std::vector<voke::library_t> installed {};
+
           VOKE_ASSERT_IGNORE(
             voke::platform::voke_system_compile_host_library(
               host_library,
               target,
               operations,
-              compiler
+              compiler,
+              installed
             ),
             voke::log() << "error: could not compile target '" << static_cast<std::string&>(target["path"]) << "' skipping..."
           );

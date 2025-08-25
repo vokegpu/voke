@@ -1,8 +1,8 @@
 #ifndef VOKE_HPP
 #define VOKE_HPP
 
-#include "argument/argument.hpp"
-#include "resource/resource.hpp"
+#include "voke/argument/argument.hpp"
+#include "voke/resource/resource.hpp"
 
 #include <string>
 #include <vector>

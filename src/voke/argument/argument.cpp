@@ -1,6 +1,6 @@
 #include "argument.hpp"
-#include "voke.hpp"
-#include "io/log.hpp"
+#include "voke/voke.hpp"
+#include "voke/io/log.hpp"
 
 voke::argument_t voke::argument::not_found {voke::empty};
 

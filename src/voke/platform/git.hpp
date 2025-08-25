@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "resource/resource.hpp"
+#include "voke/resource/resource.hpp"
 
 namespace voke {
   const static std::string vokegpu_repository_voke_repositories_url {"https://github.com/vokegpu/voke-repositories/"};

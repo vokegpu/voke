@@ -1,7 +1,7 @@
 #ifndef VOKE_ARGUMENT_HPP
 #define VOKE_ARGUMENT_HPP
 
-#include "io/memory.hpp"
+#include "voke/io/memory.hpp"
 
 #include <cstdint>
 #include <string>

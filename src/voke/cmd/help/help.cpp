@@ -1,6 +1,6 @@
 #include "help.hpp"
-#include "voke.hpp"
-#include "io/log.hpp"
+#include "voke/voke.hpp"
+#include "voke/io/log.hpp"
 
 voke::flags_t voke::cmd::help::assert() {
   if (voke::app.raw_args.empty()) {

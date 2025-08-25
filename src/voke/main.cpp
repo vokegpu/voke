@@ -1,9 +1,9 @@
-#include "io/log.hpp"
-#include "cmd/cmd.hpp"
-#include "voke.hpp"
-#include "platform/git.hpp"
-#include "io/shell.hpp"
-#include "platform/os.hpp"
+#include "voke/io/log.hpp"
+#include "voke/cmd/cmd.hpp"
+#include "voke/voke.hpp"
+#include "voke/platform/git.hpp"
+#include "voke/io/shell.hpp"
+#include "voke/platform/os.hpp"
 
 #include <iostream>
 
@@ -58,6 +58,11 @@ int32_t main(int32_t args_size, char **pp_args) {
   voke::cmd::add(
     voke::cmd::help::assert,
     voke::cmd::help::run
+  );
+
+  voke::cmd::add(
+    voke::cmd::test::assert,
+    voke::cmd::test::run
   );
 
   if (voke::app.commands_state == false) {
